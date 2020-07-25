@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE">
+	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+	<title>我的购物车</title>
+
+    <link rel="stylesheet" type="text/css" href="css/webbase.css" />
+    <link rel="stylesheet" type="text/css" href="css/pages-cart.css" />
+</head>
+
+<body>
+	<!--head-->
+	------------------头部信息
+	<!--头部结束-->
+	<!--主体全体-->
+	<div class="cart py-container" id="app">
+		<!--logoArea-->
+		<span style="color: red">xxx</span>&nbsp;&nbsp;的购物车             logo及搜索
+		<!--All goods-->
+		<div class="allgoods">
+			<h4>全部商品<span>11</span></h4>
+			<!--商品主体-->
+			<div class="cart-main">
+				<!--商品标头：商品的名称，单价，数量，小计，操作-->
+				<div class="yui3-g cart-th">
+					<div class="yui3-u-1-4"><input type="checkbox" name="" id="" value="" /> 全部</div>
+					<div class="yui3-u-1-4">商品</div>
+					<div class="yui3-u-1-8">单价（元）</div>
+					<div class="yui3-u-1-8">数量</div>
+					<div class="yui3-u-1-8">小计（元）</div>
+					<div class="yui3-u-1-8">操作</div>
+				</div>
+				<!--商品标头结束-->
+
+				<!--商品信息-->
+				<!--这是一个商品信息  需要循环-->
+				<div class="cart-item-list" v-for="(cart,cartIndex) in cartList">
+					<div class="cart-shop">
+						<input type="checkbox" name="" id="" value="" />
+						<span class="shopname self">传智自营</span>
+					</div>
+					用户的cartList集合 == {{cartList}}<br>
+					<br>
+					选中的cartSelectList集合 == {{cartSelectList}}<br>
+					<div class="cart-body" style="padding-left: 20px">
+						<div class="cart-list">
+							<ul class="goods-list yui3-g">
+								<li class="yui3-u-1-24">
+									<input type="checkbox" name="" id="" value=""
+										   @click="updateCartSelect(event,cart.skuId,cart.goodsId);"/>
+								</li>
+								<li class="yui3-u-11-24">
+									<div class="good-item">
+										<div class="item-img"><img :src="cart.image" /></div>
+										<div class="item-msg" >
+											{{cart.title}}
+											<!--这里还需要一个v-for循环 规格信息-->
+											 <span v-for="(spec,specIndex) in cart.skuSpecList">
+												 {{spec.text}} {{spec.value}}
+											 </span>
+										</div>
+									</div>
+								</li>
+								<li class="yui3-u-1-8"><span class="price">{{cart.price}}</span></li>
+								<li class="yui3-u-1-8">
+									<!--addCartNum(cart.skuId,cart.num,-1) 是操作sku的，并不是只操作前台，每点击一次cart.num - 1 -->
+									<a href="javascript:void(0)" class="increment mins" @click="addCartNum(cart.skuId,cart.num,-1)">-</a>
+									<input autocomplete="off" type="text" :value="cart.num" minnum="1" class="itxt" />
+									<!--addCartNum(cart.skuId,cart.num,-1) 是操作sku的，并不是只操作前台，每点击一次cart.num + 1 -->
+									<a href="javascript:void(0)" class="increment plus" @click="addCartNum(cart.skuId,cart.num,1)">+</a>
+								</li>
+								<li class="yui3-u-1-8"><span class="sum">{{cart.num * cart.price}}</span></li>
+								<li class="yui3-u-1-8">
+									<a href="#none" @click="delCart(cart.skuId)">删除</a><br />
+									<a href="#none">移到我的关注</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<!--商品信息结束-->
+			</div>
+			<!--商品主体结束-->
+
+			<!--删除的商品-->
+			<div class="cart-tool">
+				<div class="select-all">
+					<input type="checkbox" name="" id="" value="" />
+					<span>全选</span>
+				</div>
+				<div class="option">
+					<a href="#none">删除选中的商品</a>
+					<a href="#none">移到我的关注</a>
+					<a href="#none">清除下柜商品</a>
+				</div>
+				<div class="toolbar">
+					<div class="chosed">已选择<span style="color: red">{{totalNum}}</span>件商品</div>
+					<div class="sumprice">
+						<span><em>总价（不含运费） ：</em><i class="summoney">{{totalMoney-preMoney}}</i></span>
+						<br>
+						<!--优惠金额-->
+						<span><em>已节省：</em><i style="color: red">-¥{{preMoney}}</i></span>
+					</div>
+					<div class="sumbtn">
+						<a class="sum-btn" href="avascript:void(0)" @click="toGetOrderInfo" target="getOrderInfo.html">结算</a>
+					</div>
+				</div>
+			</div>
+			<div class="clearfix"></div>
+			<div class="deled">
+				<span>已删除商品，您可以重新购买或加关注：</span>
+				<div class="cart-list del">
+					<ul class="goods-list yui3-g">
+						<li class="yui3-u-1-2">
+							<div class="good-item">
+								<div class="item-msg">Apple Macbook Air 13.3英寸笔记本电脑 银色（Corei5）处理器/8GB内存</div>
+							</div>
+						</li>
+						<li class="yui3-u-1-6"><span class="price">8848.00</span></li>
+						<li class="yui3-u-1-6">
+							<span class="number">1</span>
+						</li>
+						<li class="yui3-u-1-8">
+							<a href="#none">重新购买</a>
+							<a href="#none">移到我的关注</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+			--------猜你喜欢
+		</div>
+	</div>
+	<!--主体结束-->
+
+<!-- 底部栏位 -->
+<!--页面底部-->
+底部广告
+<!--页面底部END-->
+
+<script src="plugins/vue/vue.min.js"></script>
+<script src="plugins/vue/axios.min.js"></script>
+<script src="plugins/jquery/jquery-3.2.1.min.js"></script>
+<script src="plugins/jquery.cookie.js"></script>
+
+<script>
+	var USER_TOKEN = $.cookie('USER_TOKEN')
+	var app = new Vue({
+		el:"#app",
+		data:{
+		    // 用户对象
+			user:{},
+			// 购物车
+			cartList:[],
+			// 勾选中的购物车
+			cartSelectList:[],
+			// 总数量
+			totalNum:0,
+            // 总价格
+            totalMoney:0,
+			// 优惠金额
+            preMoney:0
+		},
+        created:function () {
+		    // 加载我的购物车
+			this.loadMyCart();
+        },
+		methods:{
+		    /*加载购物车*/
+            loadMyCart:function () {
+				// 判断token是否为空
+				if(USER_TOKEN != null || USER_TOKEN != ''){
+                    // 如果token不为空，根据token ，调用sso登录接口，获取用户信息
+                    axios.get("http://api.sso.shop.com/api/user/token/"+USER_TOKEN).then(function (value) {
+                        // 判断：返回结果
+                        if(value.data.success){ // 为true，说明用户登录了，操作用户的购物车
+                            app.user = value.data.obj;
+                            // 将返回的用户 赋值给 vue的user
+                            // 发送请求，到cart购物车的接口进行查询，根据用户的Id查询用户名下的购物车
+                            axios.get("http://api.cart.shop.com/api/cart/myCart/"+app.user.id).then(function (res) {
+                                // 将查询到的购物车赋值给 vue 的购物车
+								alert("获取到Redis用户的购物车"+res.data)
+                                app.cartList = res.data;
+                            }).catch(function (response) {
+                                alert("加载用户购物车出错")
+                            })
+                        }
+                    })
+				}else{
+					// 为false，说明用户未登录，操作cookie中购物车
+                    // 从cookie中获取购物车,是从商品详情页面将购物车存入cookie的，命名为USER_MYCART
+                    // 此时是字符串
+					alert("cookie操作")
+                    let myCartStr = $.cookie("USER_MYCART")
+                    // 将myCartStr转为json数组
+                    let myCartList = [];
+                    if(myCartStr != null && myCartStr != ''){
+                        myCartList = $.parseJSON(myCartStr)
+                    }
+                    // 然后赋值给vue的carList
+					this.cartList =myCartList;
+                    //说明数据是获取到了
+                    alert(this.cartList)
+                }
+            },
+
+			// 修改购买商品数量
+            addCartNum:function (skuId, cartNum, num) {
+				// 购物车的一件商品，不能小于1
+                if(cartNum+num < 1 ){
+                    alert("如果您不需要改商品请进行删除操作")
+                    return ;
+                }
+
+				// 遍历购物车集合，商品的数量+1 -1都是对sku进行操作的,修改sku数量即可
+				for(let i = 0 ;i<app.cartList.length; i++){
+					// 判断操作的是哪个商品
+                    if(skuId == app.cartList[i].skuId){
+                        //进行修改，如果是减的话，传递过来的Num就是-1， 如果添加商品的话，Num就是 1
+                        app.cartList[i].num = app.cartList[i].num + num;
+                    }
+				}
+
+				// 判断token是否为Null，就是判断用户是否登录，作用是：你上边的cartNum操作是对cookie购物车操作还是user购车操作
+				if(USER_TOKEN != null && USER_TOKEN != ''){ // 说明用户登陆了
+					// 调用sso接口，获取用户信息，修改用户的购车的sku（商品）
+                    axios.get("http://api.sso.shop.com/api/user/token/"+USER_TOKEN).then(function (value) {
+						// 判断返回结果
+						if(value.data.success){
+							// 修改用户的购物车,调用后台接口
+							app.user = value.data.obj;
+							axios.post("http://api.cart.shop.com/api/cart/addCartList/"+app.user.id,app.cartList).then(function (result) {
+								if(result.data.success){
+								    alert("Redis修改数量成功")
+								}else{
+								    alert("Redis修改数量失败")
+								}
+                            })
+						}else{
+						    alert("修改商品数量的时候获取用户信息失败")
+						}
+                    })
+				}else{
+				    // 说明用户没有登录，那就是操作cookie的购物车
+					// 将json数组转为字符串，存入coolie中
+					let myCartStr = JSON.stringify(app.cartList);
+					// 存储cookie,7天
+					$.cookie('USER_MYCART',myCartStr,{
+                        expires:7,
+                        path:'/',
+                        domain:'shop.com'
+					})
+				}
+                app.countCart();
+            },
+
+			// 删除购物车
+			delCart:function (skuId) {
+                // 遍历购物车集合，商品的数量+1 -1都是对sku进行操作的,修改sku数量即可
+                if(app.cartList.length > 0){
+                    for(let i = 0 ; i < app.cartList.length; i ++){
+                        if(skuId == app.cartList[i].skuId){
+                            app.cartList.splice(i,1)
+						}
+					}
+				}
+				// 同样需要判断是删除cookie的购物车  还是用户的购物车
+				if(USER_TOKEN != null){ // 表示用户已经登录
+                    // 调用sso接口，获取用户信息，修改用户的购车的sku（商品）
+                    axios.get("http://api.sso.shop.com/api/user/token/"+USER_TOKEN).then(function (value) {
+                        // 判断返回结果
+                        if(value.data.success){
+                            // 修改用户的购物车,调用后台接口
+                            app.user = value.data.obj;
+
+                            axios.post("http://api.cart.shop.com/api/cart/addCartList/"+app.user.id,app.cartList).then(function (result) {
+                                if(result.data.success){
+                                    alert("Redis修改数量成功")
+                                }else{
+                                    alert("Redis修改数量失败")
+                                }
+                            })
+                        }else{
+                            alert("修改商品数量的时候获取用户信息失败")
+                        }
+                    })
+				}else{// 表示用户没有登录，操作coolie的购物车，修改sku即可
+                    //将新的购物车存储到cookie中
+                    //调用jquery，将json对象转换为字符串
+                    let myCartStr  = JSON.stringify(app.cartList);
+                    $.cookie('USER_MYCART',myCartStr,{
+                        expires:7,
+                        path:'/',
+                        domain:'shop.com'
+                    });
+				}
+            },
+
+            /**
+			 * 购物车勾选函数
+             * @param event  是指当前触发的是什么事件
+			 * 		  event.target 指的是事件触发的目标，即哪一个元素触发了事件，这将直接获取该dom元素
+			 * 		  比如你打开浏览器的属性，target指的值是button
+             * @param skuId  当前购物车的skuId
+             * @param goodsId 当前购物车的goodsId
+             * @param num	当前购物车的购买数量
+             * @param price 当前购物车的价格
+             */
+			updateCartSelect(event,skuId,goodsId){
+			    //event.target 指的是事件触发的目标，即哪一个元素触发了事件，这将直接获取该dom元素
+                //alert(event.target.checked + "复选框是否选中")
+
+				// 标识符，判断是否已勾选
+				let isSelect = false;
+
+				// 判断选中的购车集合，是勾选，还是取消勾选
+				if(app.cartSelectList.length>0){
+					// 遍历该集合
+					for(let i = 0 ;	 i < app.cartSelectList.length;i++){
+						// 判断传递的skuId，是否已存在，如果已经存在就是取消勾选，如果不存在就是勾选
+						if(skuId == app.cartSelectList[i].skuId){
+                            app.cartSelectList.splice(i,1)
+                            isSelect = true;
+						}
+					}
+				}
+
+				// 判断标识符false，就是勾选
+				if(!isSelect){
+					// 将用户选中的cart，放入到cartSelectList购物车中
+                    app.cartSelectList.push({"skuId":skuId,"goodsId":goodsId})
+                    // 调用计算总数量 价格 函数
+				}
+				// 调用计算总数量 价格 函数
+                app.countCart();
+			},
+
+            /**
+			 *  计算选中的购物车的商品数量，以及价格
+             */
+			countCart:function () {
+				// 遍历选中的购物车
+                app.totalNum = 0;
+                app.totalMoney = 0;
+				if(app.cartSelectList.length>0){
+					for(let i= 0 ; i < app.cartSelectList.length;i++){
+					    // 获取用户的原来的购物车集合，对比skuId,主要作用：就是获取数量，以及价格
+						// 当用户操作商品数量 + - 的时候，选中的购物车 要和 用户原来的购物车保持的商品数量，价格保持一致
+						for (let k = 0 ; k < app.cartList.length; k++){
+							// 判断用户的cartList购物车 和 选中的cartSelectList集合 的skuId是否相等
+							if( app.cartSelectList[i].skuId == app.cartList[k].skuId  ){
+							    // 那么总数就等于 加上app.carList当前商品的总数
+							    app.totalNum =  app.totalNum + app.cartList[k].num;
+							    // 那么总价就等于，app.cartList当前商品的总数 * 单价
+								app.totalMoney = app.totalMoney + (app.cartList[k].num * app.cartList[k].price);
+
+							   // 从购物车中获取购买【当前】商品数量，赋值给选中的购物车赋值，传递当前数量到后台优惠接口，计算优惠金额
+                                app.cartSelectList[i].num = app.cartList[k].num;
+                            }
+						}
+					}
+					// 调用优惠接口，计算优惠金额，将用户选中的购物车传递到后台
+					axios.post("http://api.cart.shop.com/api/cart/discount",app.cartSelectList).then(function (reponse) {
+							//接收返回结果，优惠金额
+							app.preMoney = reponse.data; // 接收优惠金额
+                    })
+
+
+				}
+            },
+
+            /**
+			 *  跳转到【结算】页面
+             */
+            toGetOrderInfo:function () {
+				//判断用户是否登录
+                axios.get("http://api.sso.shop.com/api/user/token/"+USER_TOKEN).then(function (value) {
+                    // 判断：返回结果
+                    if(value.data.success){ // 为true，说明用户登录了
+						alert("用户已经登录")
+						alert(JSON.stringify(app.cartSelectList) + "= app.cartSelectList ")
+                        // 跳转到登录页面,并且传递参数,参数是“用户选中的”购物车，将cartSelectList转为字符串
+						location.href = "getOrderInfo.html?cartSelectList="+JSON.stringify(app.cartSelectList );
+
+                    }else{
+                        // 表示用户不存在，去登录页面
+						alert("跳转到登录页面")
+                        location.href="http://sso.shop.com/login.html";
+					}
+                })
+            }
+
+		}
+	})
+</script>
+
+
+
+</body>
+
+</html>

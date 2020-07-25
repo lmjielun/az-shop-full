@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/az_shop_parent" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/az_shop_parent/shop_cart_api" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/az_shop_parent/shop_common_api" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/az_shop_parent/shop_framework" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/az_shop_parent/shop_manage_api" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/az_shop_parent/shop_order_api" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/az_shop_parent/shop_pay_api" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/az_shop_parent/shop_pojo" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/az_shop_parent/shop_portal" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/az_shop_parent/shop_sso_api" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/log_auth" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/log_sys" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/springboot_activemq_consumers" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/springmvc_log" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/springsoot_active" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/staticPage" charset="UTF-8" />
+  </component>
+</project>

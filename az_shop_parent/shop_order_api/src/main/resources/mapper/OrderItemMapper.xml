@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yzit.shop.dao.OrderItemDao" > 
+<!-- Result Map-->
+<resultMap id="BaseResultMap" type="com.yzit.shop.entity.OrderItem" >
+    	<result column="id" property="id"/>
+    	<result column="category_id1" property="categoryId1"/>
+    	<result column="category_id2" property="categoryId2"/>
+    	<result column="category_id3" property="categoryId3"/>
+    	<result column="goods_id" property="goodsId"/>
+    	<result column="sku_id" property="skuId"/>
+    	<result column="order_id" property="orderId"/>
+    	<result column="name" property="name"/>
+    	<result column="price" property="price"/>
+    	<result column="num" property="num"/>
+    	<result column="money" property="money"/>
+    	<result column="pay_money" property="payMoney"/>
+    	<result column="image" property="image"/>
+    	<result column="weight" property="weight"/>
+    	<result column="post_fee" property="postFee"/>
+    	<result column="is_return" property="isReturn"/>
+</resultMap>
+<!-- $!{tableName} table all fields -->
+<sql id="Base_Column_List" >
+	 id,category_id1,category_id2,category_id3,goods_id,sku_id,order_id,name,price,num,money,pay_money,image,weight,post_fee,is_return
+</sql>
+   
+   
+<!-- 查询条件 -->
+<sql id="Example_Where_Clause">
+where 1=1
+<trim  suffixOverrides="," >
+	<if test="id != null and id != ''" >
+	    and id = #{id}
+	</if>
+	<if test="categoryId1 != null" >
+	    and category_id1 = #{categoryId1}
+	</if>
+	<if test="categoryId2 != null" >
+	    and category_id2 = #{categoryId2}
+	</if>
+	<if test="categoryId3 != null" >
+	    and category_id3 = #{categoryId3}
+	</if>
+	<if test="goodsId != null and goodsId != ''" >
+	    and goods_id = #{goodsId}
+	</if>
+	<if test="skuId != null and skuId != ''" >
+	    and sku_id = #{skuId}
+	</if>
+	<if test="orderId != null and orderId != ''" >
+	    and order_id = #{orderId}
+	</if>
+	<if test="name != null and name != ''" >
+	    and name = #{name}
+	</if>
+	<if test="price != null" >
+	    and price = #{price}
+	</if>
+	<if test="num != null" >
+	    and num = #{num}
+	</if>
+	<if test="money != null" >
+	    and money = #{money}
+	</if>
+	<if test="payMoney != null" >
+	    and pay_money = #{payMoney}
+	</if>
+	<if test="image != null and image != ''" >
+	    and image = #{image}
+	</if>
+	<if test="weight != null" >
+	    and weight = #{weight}
+	</if>
+	<if test="postFee != null" >
+	    and post_fee = #{postFee}
+	</if>
+	<if test="isReturn != null and isReturn != ''" >
+	    and is_return = #{isReturn}
+	</if>
+</trim>
+</sql>
+   
+
+<!-- 插入记录 -->
+<insert id="save" parameterType="com.yzit.shop.entity.OrderItem" >
+  insert into tb_order_item(id,category_id1,category_id2,category_id3,goods_id,sku_id,order_id,name,price,num,money,pay_money,image,weight,post_fee,is_return)
+ values(#{id},#{categoryId1},#{categoryId2},#{categoryId3},#{goodsId},#{skuId},#{orderId},#{name},#{price},#{num},#{money},#{payMoney},#{image},#{weight},#{postFee},#{isReturn})
+</insert>
+
+<!-- 根据id，修改记录-->  
+ <update id="update" parameterType="com.yzit.shop.entity.OrderItem" >
+  update tb_order_item set category_id1=#{categoryId1},category_id2=#{categoryId2},category_id3=#{categoryId3},goods_id=#{goodsId},sku_id=#{skuId},order_id=#{orderId},name=#{name},price=#{price},num=#{num},money=#{money},pay_money=#{payMoney},image=#{image},weight=#{weight},post_fee=#{postFee},is_return=#{isReturn} where id=#{id}
+ </update>
+ 
+ <!-- 修改记录，只修改只不为空的字段 -->
+<update id="updateBySelective" parameterType="com.yzit.shop.entity.OrderItem" >
+	update tb_order_item set 
+	<trim  suffixOverrides="," >
+	<if test="categoryId1 != null  ">
+		category_id1=#{categoryId1},
+	</if>
+	<if test="categoryId2 != null  ">
+		category_id2=#{categoryId2},
+	</if>
+	<if test="categoryId3 != null  ">
+		category_id3=#{categoryId3},
+	</if>
+	<if test="goodsId != null  and goodsId != '' ">
+		goods_id=#{goodsId},
+	</if>
+	<if test="skuId != null  and skuId != '' ">
+		sku_id=#{skuId},
+	</if>
+	<if test="orderId != null  and orderId != '' ">
+		order_id=#{orderId},
+	</if>
+	<if test="name != null  and name != '' ">
+		name=#{name},
+	</if>
+	<if test="price != null  ">
+		price=#{price},
+	</if>
+	<if test="num != null  ">
+		num=#{num},
+	</if>
+	<if test="money != null  ">
+		money=#{money},
+	</if>
+	<if test="payMoney != null  ">
+		pay_money=#{payMoney},
+	</if>
+	<if test="image != null  and image != '' ">
+		image=#{image},
+	</if>
+	<if test="weight != null  ">
+		weight=#{weight},
+	</if>
+	<if test="postFee != null  ">
+		post_fee=#{postFee},
+	</if>
+	<if test="isReturn != null  and isReturn != '' ">
+		is_return=#{isReturn},
+	</if>
+	</trim> where id=#{id}
+	
+	
+	
+</update>
+
+<!-- 删除记录 -->
+<delete id="delById" parameterType="java.lang.Long">
+	delete from tb_order_item where  id =#{id}
+</delete>
+ 
+<!-- 根据id查询 订单详情 -->
+<select id="findById"  resultMap="BaseResultMap" parameterType="java.lang.Long">
+	select <include refid="Base_Column_List"/>
+	from tb_order_item  where  id = #{id}
+</select>
+
+<!-- 检索所有的记录 -->
+<select id="findAll"  resultMap="BaseResultMap" >
+	select 
+	<include refid="Base_Column_List"/>
+	from tb_order_item 
+</select>
+  	
+<!-- 查询订单详情列表 -->
+<select id="findByList" resultMap="BaseResultMap"  parameterType="com.yzit.shop.entity.OrderItem">
+	select 
+	<include refid="Base_Column_List"/>
+	from tb_order_item 
+	<include refid="Example_Where_Clause"/>
+	<!--  limit  #{startIndex} ,#{pageSize} -->
+</select>
+  	
+</mapper>   

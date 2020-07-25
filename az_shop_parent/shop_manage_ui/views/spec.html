@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>model</title>
+    <script src="../../static/vue/vue.min.js"></script>
+    <link rel="stylesheet" href="../../static/elementUI/index.css">
+    <script src="../../static/elementUI/index.js"></script>
+    <script src="../../static/vue/axios.min.js"></script>
+    <script src="../static/jquery-3.2.1.min.js"></script>
+</head>
+<body>
+<div id="app">
+    <!--布局容器-->
+    <el-container>
+        <!--卡片-->
+        <el-card class="box-card" shadow="hover" style="margin-top: 20px;margin-left: 20px;">
+            <span style="color: #3a8ee6">商品类别</span>
+            <br>
+            <br>
+            <!--左侧布局-->
+            <el-aside  style="width: 180px;height: 200px">
+                <!--树数据-->
+                <el-tree :data="categoryTree" :props="defaultProps"
+                         @node-click="handleNodeClick">
+                </el-tree>
+            </el-aside>
+        </el-card>
+
+
+        <!--右侧布局-->
+        <el-main>
+            <el-button type="primary" @click="dialogVisible=true">
+                新增
+            </el-button>
+            <!--table表格-->
+            <el-table stipe border :data="specList">
+                <el-table-column prop="name" label="参数名称"></el-table-column>
+                <el-table-column prop="categoryId" label="所属商品类型"></el-table-column>
+                <el-table-column prop="seq" label="排序"></el-table-column>
+                <el-table-column prop="specItems" label="规格值"  :formatter="formatter"></el-table-column>
+                <el-table-column label="操作">
+                    <template slot-scope="scope">
+                        <el-button type="primary"size="small" @click="handleEdit(scope.row)">修改</el-button>
+                        <el-button type="danger" size="small" >删除</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+
+            <!--dialog-->
+            <el-dialog title="规格编辑" :visible.sync="dialogVisible">
+                <el-form label-width="80px">
+
+                    <el-form-item label="规格名称">
+                        <el-input  placeholder="请输入规格名称" v-model="specForm.name"></el-input>
+                    </el-form-item>
+
+                    <el-form-item label="排序">
+                        <el-input  placeholder="数字越小排名越靠前" v-model="specForm.seq"></el-input>
+                    </el-form-item>
+
+                    <el-form-item label="添加规格">
+                        <el-button @click="addItem">新增规格</el-button>
+                    </el-form-item>
+
+                    <el-form-item>
+
+                        <el-row>
+                            <el-col :span="10">规格值名</el-col>
+                            <el-col :span="2">&nbsp;</el-col>
+                            <el-col :span="8">操作</el-col>
+                        </el-row>
+
+                        <el-row v-for="(spec,index) in specForm.specList" style="margin-top: 10px">
+
+                            <el-col :span="10">
+
+                                <el-input v-model="specForm.specList[index].text"></el-input>
+
+                            </el-col>
+
+                            <el-col :span="2">&nbsp;</el-col>
+
+                            <el-col :span="8">
+                                <el-button type="danger" @click="delItem(index)">删除</el-button>
+                            </el-col>
+
+                        </el-row>
+
+                    </el-form-item>
+
+
+                    <el-button @click="save()">保存</el-button>
+                    <el-button @click="dialogVisible = false">关闭</el-button>
+                    </el-form-item>
+                </el-form>
+
+            </el-dialog>
+
+        </el-main>
+    </el-container>
+
+</div>
+
+<script>
+    var baseUrl = "http://localhost:90";
+    //var baseUrl = "http://api.shop.com";
+    var app = new Vue({
+        el:"#app",
+        data:{
+            // 转换后的树结构
+            categoryTree:[],
+            // 转换前的json结构
+            categoryList:[],
+            // 树结构默认绑定属性为text
+            defaultProps:{
+                children: 'children',
+                label: 'text'
+            },
+
+            // 默认【商品】分类id是0
+            categoryId:"",
+            // 定义规格集合
+            specList:[],
+
+            // 定义提交表单对象
+            specForm:{
+                specList:[],
+            },
+
+            dialogVisible:false,
+
+        },
+        created:function () {
+            // 加载 【商品】分类 列表
+            this.loadCategoryTree();
+            // 加载【规格】列表
+            this.loadSpecs();
+
+        },
+        methods:{
+            //执行修改
+            updateSpec:function () {
+                axios.put(baseUrl +"/api/spec/spec",app.specForm).then(function (value) {
+                    if(value.data.success){
+                        app.dialogVisible = false;//关闭dialog
+                        app.loadSpecs(); // 重新加载属性页面
+                        app.$message('修改规格成功');
+                    }else{
+                        app.$message.error('修改规格失败');
+                    }
+                })
+            },
+            // 根据规格的主键Id去查找一条规格记录
+            handleEdit:function (row) {
+                app.dialogVisible = true;
+                // 这里要获取到row的商品类型Id,赋值给app的商品类型id,这里如果不赋值的话，将会出现Bug，在第一次点击修改，商品的类型id会变为0
+                app.categoryId = row.categoryId
+                axios.get(baseUrl + "/api/spec/"+row.id).then(function (value) {
+                    app.specForm = value.data;
+                })
+            },
+            // 添加规格
+            addSpec:function () {
+                axios.post(baseUrl +"/api/spec/spec",app.specForm).then(function (value) {
+                    if(value.data.success){
+                        app.dialogVisible = false;//关闭dialog
+                        app.loadSpecs(); // 重新加载页面
+                        app.$message('添加属性成功');
+                        app.specForm = {}
+                    }else{
+                        app.$message.error('添加属性失败');
+                    }
+                })
+            },
+            // 点击保存按钮，判断是提交还是修改
+            save:function () {
+                // 给【商品】分类的id进行赋值,以遍修改的时候，商品类别不丢失
+               app.specForm.categoryId = app.categoryId;
+                if(app.specForm.id > 0 ){
+                    app.updateSpec();
+                }else{
+                    app.addSpec();
+                }
+            },
+            // 删除form表单里的一行规格
+            delItem:function (index) {
+                app.specForm.specList.splice(index,1)
+            },
+            // 在提交的form表单里添加一行规格
+            addItem:function () {
+              app.specForm.specList.push({})
+            },
+            // 加载规格列表，同时发送 【商品分类】id，进行查询，第一次是只查询商品Id为0 的
+            loadSpecs:function () {
+                axios.get(baseUrl + "/api/spec/list?categoryId="+this.categoryId).then(function (value) {
+                    app.specList = value.data;
+                })
+            },
+            // tree的点击事件
+            handleNodeClick:function (data) {
+                app.categoryId = data.id;
+                app.loadSpecs();
+            },
+            // 加载【商品】分类数据
+            loadCategoryTree:function () {
+                // 什么参数都不传，直接拿到所有的数据，然后进行 经过转换函数进行转换
+                axios.get(baseUrl+"/api/category/list").then(function (value) {
+                    app.categoryList = value.data;
+                    app.categoryTree = app.convert(app.categoryList);
+                })
+            },
+            //格式化列
+            formatter:function (row, column, cellValue, index) {
+                if (column.property == "specItems") {
+                    // 1、定义一个 json结果字符串
+                    let resultJson = "";
+
+                    // 2、判断cellValue的值是否为空
+                    if (cellValue.length > 0) {
+
+                        // 3、使用jquery  将获取到的cellValue(此时值是字符串类型)值转为json类型
+                        var jsonObj = $.parseJSON(cellValue);
+
+                        // 4、循环jsonObj
+                        for (let i = 0; i < jsonObj.length; i++) {
+                            // 5、循环将值赋值给resultJson
+                            resultJson += jsonObj[i].text + " ";
+                        }
+                    }
+                    // 6、将resultJson返回
+                    return resultJson;
+                }
+            },
+            //转换函数
+            convert(rows){
+                function exists(rows, parentId){
+                    for(var i=0; i<rows.length; i++){
+                        if (rows[i].id == parentId) return true;
+                    }
+                    return false;
+                }
+                var nodes = [];
+                // get the top level nodes
+                for(var i=0; i<rows.length; i++){
+                    var row = rows[i];
+                    if (!exists(rows, row.parentId)){
+                        nodes.push({
+                            id:row.id,
+                            text:row.name
+                        });
+                    }
+                }
+                var toDo = [];
+                for(var i=0; i<nodes.length; i++){
+                    toDo.push(nodes[i]);
+                }
+                while(toDo.length){
+                    var node = toDo.shift();   // the parent node
+                    // get the children nodes
+                    for(var i=0; i<rows.length; i++){
+                        var row = rows[i];
+                        if (row.parentId == node.id){
+                            var child = {id:row.id,text:row.name};
+                            if (node.children){
+                                node.children.push(child);
+                            } else {
+                                node.children = [child];
+                            }
+                            toDo.push(child);
+                        }
+                    }
+                }
+                return nodes;
+            },
+            // 关闭dialog之前执行
+            handleClose:function (done) {
+                app.$confirm("确认关闭吗?","提示")
+                    .then(function() { // 点击确定执行
+                        done(); // 关闭dialog
+                    })
+            },
+        }
+    });
+
+</script>
+</body>
+</html>

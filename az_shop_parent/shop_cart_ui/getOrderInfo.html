@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE">
+	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+	<title>结算页</title>
+
+	<link rel="stylesheet" type="text/css" href="css/webbase.css">
+	<link rel="stylesheet" type="text/css" href="css/pages-getOrderInfo.css">
+
+
+
+</head>
+
+<body>
+	<!--头部开始-->
+	<div class="top">
+		<div class="py-container">
+			<div class="shortcut">
+				<ul class="fl">
+					<li class="f-item">**电商欢迎您！</li>
+					<li class="f-item">请登录　<span><a href="#">免费注册</a></span></li>
+				</ul>
+				<ul class="fr">
+					<li class="f-item">我的订单</li>
+					<li class="f-item space"></li>
+					<li class="f-item">我的**电商</li>
+					<li class="f-item space"></li>
+					<li class="f-item">**电商会员</li>
+					<li class="f-item space"></li>
+					<li class="f-item">企业采购</li>
+					<li class="f-item space"></li>
+					<li class="f-item">关注**电商</li>
+					<li class="f-item space"></li>
+					<li class="f-item">客户服务</li>
+					<li class="f-item space"></li>
+					<li class="f-item">网站导航</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<!--头部结束-->
+
+	<!--主体开始-->
+	<div class="cart py-container" id="app">
+		用户 = {{user}}<br>
+		用户选中的购物车 = {{cartSelectList}}<br>
+		用户的收货地址 = {{addressList}}<br>
+		最终要结算的购物车 = {{finallyCarts}}<br>
+		orderForm = {{orderForm}}<br>
+		<!--logoArea区域开始-->
+		<div class="logoArea">
+			<div class="fl logo"><span class="title">结算页</span></div>
+			<div class="fr search">
+				<form class="sui-form form-inline">
+					<div class="input-append">
+						<input type="text" type="text" class="input-error input-xxlarge" placeholder="**电商自营" />
+						<button class="sui-btn btn-xlarge btn-danger" type="button">搜索</button>
+					</div>
+				</form>
+			</div>
+		</div>
+		<!--logoArea结束开始-->
+		<!--订单主内容开始-->
+		<div class="checkout py-container">
+			<div class="checkout-tit">
+				<h4 class="tit-txt">填写并核对订单信息</h4>
+			</div>
+			<div class="checkout-steps">
+				<!--收件人信息-->
+				<div class="step-tit">
+					<h5>收件人信息<span><a data-toggle="modal" data-target=".edit" data-keyboard="false" class="newadd">新增收货地址</a></span></h5>
+				</div>
+				<div class="step-cont">
+					<div class="addressInfo">
+						<ul class="addr-detail">
+							<li class="addr-item">
+							  <div v-for="address in addressList">
+								  <!--显示联系人姓名-->
+									<div :class="(address.isDefault) == 1 ? 'con name selected' :'con name' " @click="setOrderForm(address.contact,address.mobile,address.address)">
+										<a href="javascript:;" >{{address.contact}}<span title="点击取消选择"></span></a>
+									</div>
+									<!--显示联系人 详细地址  电话-->
+								  <div class="con address">{{address.contact}} {{address.address}}<span>{{address.mobile}}</span>
+									<span  v-if="address.isDefault==1"></span>
+									<span class="base" v-else @click="setDefaultAddress(address)">设为默认地址</span>
+								  </div>
+								  <span class="edittext"><a data-toggle="modal" data-target=".edit" data-keyboard="false" @click="getAddress(address.id)">编辑</a>&nbsp;&nbsp;<a href="javascript:;">删除</a></span>
+								  <div class="clearfix"></div>
+							  </div>
+							</li>
+						</ul>
+						<!--添加地址-->
+                          <div  tabindex="-1" role="dialog" data-hasfoot="false" class="sui-modal hide fade edit">
+						  <div class="modal-dialog">
+						    <div class="modal-content">
+						      <div class="modal-header">
+						        <button type="button" data-dismiss="modal" aria-hidden="true" class="sui-close">×</button>
+						        <h4 id="myModalLabel" class="modal-title">添加收货地址</h4>
+						      </div>
+								<!--添加收货地址-->
+						      <div class="modal-body">
+						      	<form action="" class="sui-form form-horizontal">
+						      		 <div class="control-group">
+									    <label class="control-label">收货人：</label>
+									    <div class="controls">
+									      <input type="text" class="input-medium" v-model="addressForm.contact">
+									    </div>
+									  </div>
+									   
+									   <div class="control-group">
+									    <label class="control-label">详细地址：</label>
+									    <div class="controls">
+									      <input type="text" class="input-large" v-model="addressForm.address">
+									    </div>
+									  </div>
+									   <div class="control-group">
+									    <label class="control-label">联系电话：</label>
+									    <div class="controls">
+									      <input type="text" class="input-medium" v-model="addressForm.mobile">
+									    </div>
+									  </div>
+									   <div class="control-group">
+									    <label class="control-label">邮箱：</label>
+									    <div class="controls">
+									      <input type="text" class="input-medium"  v-model="addressForm.notes">
+									    </div>
+									  </div>
+									   <div class="control-group">
+									    <label class="control-label">地址别名：</label>
+									    <div class="controls">
+									      <input type="text" class="input-medium" v-model="addressForm.alias">
+									    </div>
+									    <div class="othername">
+									    	建议填写常用地址：<a href="#" class="sui-btn btn-default">家里</a>　<a href="#" class="sui-btn btn-default">父母家</a>　<a href="#" class="sui-btn btn-default">公司</a>
+									    </div>
+									  </div>
+						      	</form>
+						      	
+						      	
+						      </div>
+						      <div class="modal-footer">
+						        <button type="button" data-ok="modal" @click="editAddress" class="sui-btn btn-primary btn-large" >确定</button>
+						        <button type="button" data-dismiss="modal" class="sui-btn btn-default btn-large">取消</button>
+						      </div>
+						    </div>
+						  </div>
+						</div>
+						 <!--确认地址-->
+					</div>
+					<div class="hr"></div>
+					
+				</div>
+				<div class="hr"></div>
+				<!--支付和送货-->
+				<div class="payshipInfo">
+					<div class="step-tit">
+						<h5>支付方式</h5>
+					</div>
+					<div class="step-cont">
+						<ul class="payType">
+							<!--支付方式-->
+							<li class="selected" @click="orderForm.payType=1">微信付款<span title="点击取消选择"></span></li>
+							<li @click="orderForm.payType=0">货到付款<span title="点击取消选择"></span></li>
+						</ul>
+					</div>
+					<div class="hr"></div>
+					<div class="step-tit">
+						<h5>送货清单</h5>
+					</div>
+					<div class="step-cont">
+						<ul class="send-detail">
+							<li v-for="(cart,indext) in finallyCarts">
+								<div class="sendGoods">
+									
+									<ul class="yui3-g">
+										<li class="yui3-u-1-6">
+											<span><img :src="cart.image"/></span>
+										</li>
+										<li class="yui3-u-7-12">
+												<div class="desc">{{cart.title}}
+													<span v-for="spec in cart.skuSpecList">
+														{{spec.value}}
+													</span>
+												</div>
+											<div class="seven">7天无理由退货</div>
+										</li>
+										<li class="yui3-u-1-12">
+											<div class="price">￥{{cart.price}}</div>
+										</li>
+										<li class="yui3-u-1-12">
+											<div class="num">X {{cart.num}}</div>
+										</li>
+										<li class="yui3-u-1-12">
+											<div class="exit">有货</div>
+										</li>
+									</ul>
+								</div>
+							</li>
+							<li></li>
+							<li></li>
+						</ul>
+					</div>
+					<div class="hr"></div>
+				</div>
+				<div class="linkInfo">
+					<div class="step-tit">
+						<h5>发票信息</h5>
+					</div>
+					<div class="step-cont">
+						<span>普通发票（电子）</span>
+						<span>个人</span>
+						<span>明细</span>
+					</div>
+				</div>
+				<div class="cardInfo">
+					<div class="step-tit">
+						<h5>使用优惠/抵用</h5>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--订单主内容结束-->
+
+		<!--商品数量 金额 开始-->
+		<div class="order-summary">
+			<div class="static fr">
+				<div class="list">
+					<span><i class="number">{{totalNum}}</i>件商品，总商品金额</span>
+					<em class="allprice">¥{{totalMoney}}</em>
+				</div>
+				<div class="list">
+					<span>返现：</span>
+					<em class="money">0.00</em>
+				</div>
+				<div class="list">
+					<span>运费：</span>
+					<em class="transport">0.00</em>
+				</div>
+			</div>
+		</div>
+		<!--商品数量 金额 结束-->
+
+		<!--应付金额以及派送地址开始-->
+		<div class="clearfix trade">
+			<div class="fc-price">应付金额:　<span class="price">¥{{totalMoney-preMoney}}</span></div>
+				<div class="fc-receiverInfo">
+					<span>
+						收货人：{{defaultAddress.contact}}   收货地址：{{defaultAddress.address}} 联系人电话：{{defaultAddress.mobile}}
+					</span>
+				</div>
+		</div>
+		<div class="submit">
+			<a class="sui-btn btn-danger btn-xlarge"  @click="crateOrder">提交订单</a>
+		</div>
+		<!--应付金额以及派送地址结束-->
+
+	</div>
+	<!--主体结束-->
+
+
+	<!-- 底部栏位 -->
+	<!--页面底部-->
+----------------------------------页面底部-----------------------------------
+<!--页面底部END-->
+<script src="plugins/jquery/jquery-3.2.1.min.js"></script>
+<script src="plugins/jquery.cookie.js"></script>
+<script type="text/javascript" src="plugins/jquery.easing/jquery.easing.min.js"></script>
+<script type="text/javascript" src="plugins/sui/sui.min.js"></script>
+<script type="text/javascript" src="plugins/getOrderInfo.js"></script>
+<script src="plugins/vue/vue.min.js"></script>
+<script src="plugins/vue/axios.min.js"></script>
+<script src="plugins/vue/qs.js"></script>
+<script src="util.js"></script>
+
+<script>
+	// 获取用户的token令牌
+    var USER_TOKEN = $.cookie('USER_TOKEN');
+	var app = new Vue({
+		el:"#app",
+		data:{
+			// 用户选中的购物车
+		    cartSelectList:[],
+			// 从redis获取到的购物车
+            redisCartList:[],
+			// 要结算的购物车
+			finallyCarts:[],
+			// 用户的收货地址 数组
+			addressList:[],// 格式为：[{id:"主键",:contact:"联系人",mobile:"手机号",address:"详细地址",isDefault:"是否默认"，alias:"别名"}]
+			// 用户默认的收货地址
+			defaultAddress:{},
+			// 用户对象
+            user:{},
+			// 总价钱
+            totalMoney:0,
+			// 总数量
+            totalNum:0,
+			// 优惠价
+            preMoney:0,
+			// 地址对象
+            addressForm:{},
+			// 订单对象
+			// 格式：
+			orderForm:{},
+			// 收货人
+          /*  receiverContact:"",
+			// 收货手机
+            receiverMobile:"",
+			// 收货地址
+            receiverAddress:"",*/
+
+		},
+		created:function () {
+			// 加载数据
+			this.loadData();
+			// 加载默认的收货地址
+			this.loadDefaultAddress()
+        },
+		methods:{
+            loadDefaultAddress:function () {
+				axios.get("http://api.sso.shop.com/api/address/defaultAddress").then(function (value) {
+					app.defaultAddress = value.data;
+                })
+            },
+			// 创建订单
+		    crateOrder:function () {
+		        // 给orderFrom赋值
+				app.orderForm = {
+				    totalNum:app.totalNum,  // 总数
+					totalMoney:app.totalMoney,// 总价
+					preMoney:app.preMoney, // 优惠金额
+					payMoney:(app.totalMoney - app.preMoney), // 实付金额
+					orderItemList:app.cartSelectList,// 用户选中的购物车集合
+                    receiverContact:app.defaultAddress.contact, // 收货人
+                    receiverMobile:app.defaultAddress.mobile,// 收货手机
+                    receiverAddress:app.defaultAddress.address,// 收货地址
+					username:app.user.username,// 用户名称
+				}
+				// 调用订单接口，保存订单
+				axios.post("http://api.order.shop.com/api/order/order/",app.orderForm).then(function (value) {
+					if(value.data.success){
+					    if(app.redisCartList.length > 0){
+                            alert("下单成功")
+                            // 添加成功后需要删除，redis该购物车
+                            // 需要两层for循环，循环用户选中购物车的集合 与 redis获取的购物车集合循环比对
+                            alert("双层遍历购物车集合")
+                            for(let i = 0 ; i < app.cartSelectList.length;i++){
+                                for(let k = 0 ; k < app.redisCartList.length; k++){
+                                    if(app.cartSelectList[i].skuId == app.redisCartList[k].skuId){
+                                        alert("比对购物车")
+                                        // 如果比较出来两个值相等，就删除该条数据，因为已经下单支付，该商品不需要在购物车中存在了
+                                        app.redisCartList.splice(k,1)
+                                        alert("删除购物车")
+                                    }
+                                }
+                            }
+                            alert("购物车集合的长度 "+ app.redisCartList.length);
+                            // 判断redis购物车是否有物品,有物品了改变原来的reids里的购物车信息，跳转到购物车页面
+                            axios.post("http://api.cart.shop.com/api/cart/addCartList/"+app.user.id,app.redisCartList).then(function (ret) {
+                                if(ret.data.success){
+                                    alert("修改redis购物车成功")
+
+									if(app.redisCartList.length > 0){
+                                        location.href = "http://cart.shop.com/cart.html";
+									}else{
+                                        location.href = "http://www.shop.com";
+									}
+                                }else{
+                                    alert("修改redis购物车失败")
+                                }
+                            })
+						}
+					}else{
+					    alert("下单失败")
+					}
+                })
+            },
+
+
+			// 加载数据
+            loadData:function () {
+				/*
+					接收参数，用户选中的购物车，购物车传递过来的是字符串，要使用parseJoson转换一下
+					然后使用util.js文件里的getQueryString接收html传递过来的参数
+					注意这里使用this. 不要使用 app.
+				 */
+				this.cartSelectList = $.parseJSON(getQueryString("cartSelectList"));
+
+				/*
+					获取token，获取用户信息，用户的token上边已经定获取到了 USER_TOKEN
+					然后根据token,向登录接口(api.sso.shop.com)发送请求
+				 */
+				axios.get("http://api.sso.shop.com/api/user/token/"+USER_TOKEN).then(function (value) {
+					if(value.data.success){ // 说明获取成功
+						// 给用户对象赋值
+						app.user = 	value.data.obj;
+
+						// 调用sso的address里的list/{userId}接口，根据用户的id获取用户的 收货地址集合
+						axios.get("http://api.sso.shop.com/api/address/list/"+app.user.id).then(function (res) {
+							app.addressList = res.data; // 将得到的 收货地址集合 赋值给 addresList
+                        })
+
+						// 再根据用户的Id，从redis中，获取用户的购物车集合
+                        axios.get("http://api.cart.shop.com/api/cart/myCart/"+app.user.id).then(function (reault) {
+
+                            app.redisCartList = reault.data;
+                            app.finallyCarts =[];
+                            // 两层for循环，根据skui比对商品是否存在，因为用户选中的10个商品，可能只结算1个商品
+							// 先循环 要结算的购物车
+							for(let i = 0 ; i < app.cartSelectList.length;i++){
+								// 再循环用户选中的购物车
+								for(let k = 0 ; k <  app.redisCartList.length;k++){
+								    // 如果两者循环比对相等
+								    if(app.cartSelectList[i].skuId ==  app.redisCartList[k].skuId){
+								        // 就放入finallyCart
+                                        app.finallyCarts.push( app.redisCartList[k])
+                                    }
+								}
+							}
+							app.countCart()
+
+                        }).catch(function (response) {
+                            alert("加载用户购物车出错")
+                        })
+
+
+					}else{ // 说明获取用户信息失败
+						alert("获取用户信息失败")
+					}
+                })
+
+            },
+
+            /**
+             *  计算选中的购物车的商品数量，以及价格
+             */
+            countCart:function () {
+                // 遍历选中的购物车
+                app.totalNum = 0;
+                app.totalMoney = 0;
+                    // 遍历最后要结算的购物车
+				for(let i = 0 ; i < app.finallyCarts.length; i++){
+                    app.totalNum =  app.totalNum +  app.finallyCarts[i].num;
+                    app.totalMoney =   app.totalMoney + (app.finallyCarts[i].num * app.finallyCarts[i].price);
+				}
+
+				// 调用优惠接口，计算优惠金额，将用户选中的购物车传递到后台
+                axios.post("http://api.cart.shop.com/api/cart/discount",app.finallyCarts).then(function (reponse) {
+                    //接收返回结果，优惠金额
+                    app.preMoney = reponse.data; // 接收优惠金额
+                })
+
+            },
+
+            // 设置订单收货人，收货人手机号，收货地址信息
+            setOrderForm:function (contact,mobile,address) {
+                alert("收货人"+contact+"电话"+mobile+"地址"+address)
+                /*app.receiverContact = contact, //收货人
+				app.receiverMobile = mobile, // 收货人手机
+				app.receiverAddress= address// 收货地址*/
+
+				app.defaultAddress.contact = contact;
+				app.defaultAddress.mobile = mobile;
+				app.defaultAddress.address = address;
+
+            },
+
+            /**
+			 *  修改默认地址
+             * @param address
+             */
+            setDefaultAddress:function (address) {
+				axios.get("http://api.sso.shop.com/api/address/"+address.userId+"/"+address.id).then(function (value) {
+					if(value.data.success){
+						alert("修改默认地址成功")
+						app.loadData();
+                        app.loadDefaultAddress();
+					}
+                })
+            },
+
+            /**
+			 * 添加收货地址
+             */
+            editAddress:function () {
+                if(app.addressForm.id > 0){
+                    app.updateAddress();
+				}else {
+                    app.saveAddress();
+				}
+            },
+
+			// 根据收货地址 id 获取地址对象
+            getAddress:function (id) {
+                axios.get("http://api.sso.shop.com/api/address/"+id).then(function (value) {
+                    console.log(value.data)
+					app.addressForm = value.data;
+                })
+            },
+            /**
+			 * 修改收货地址
+             */
+            updateAddress:function () {
+                axios.put("http://api.sso.shop.com/api/address/address",app.addressForm).then(function (value) {
+                    if(value.data.success){
+                        app.loadData(); // 重新加载属性页面
+                        app.addressForm = {};
+                    }else{
+                        app.$message.error('修改地址成功');
+                    }
+                })
+            },
+
+            /**
+			 * 添加收货地址
+             */
+            saveAddress:function () {
+                app.addressForm.userId = app.user.id;
+                axios.post("http://api.sso.shop.com/api/address/address",app.addressForm).then(function (value) {
+                    if(value.data.success){
+                        app.loadData(); // 重新加载属性页面
+                        app.addressForm = {};
+                    }else{
+                        app.$message.error('添加地址成功');
+                    }
+                })
+            }
+
+        }
+
+	})
+
+</script>
+
+</body>
+
+</html>

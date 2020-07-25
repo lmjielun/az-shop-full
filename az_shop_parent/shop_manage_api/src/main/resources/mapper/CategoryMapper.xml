@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yzit.shop.dao.CategoryMapper" >
+  <resultMap id="BaseResultMap" type="com.yzit.shop.entity.Category" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="parent_id" property="parentId" jdbcType="BIGINT" />
+    <result column="is_show" property="isShow" jdbcType="BIT" />
+    <result column="is_menu" property="isMenu" jdbcType="BIT" />
+    <result column="seq" property="seq" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, name, parent_id, is_show, is_menu, seq
+  </sql>
+
+
+  <!--条件查询+列表-->
+  <select id="findByList" parameterType="com.yzit.shop.entity.Category" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tb_category
+    <where>
+      <if test="name != null and name !='' ">
+        and name like '%{name}%'
+      </if>
+      <if test="parentId != null">
+        and parent_id = #{parentId}
+      </if>
+    </where>
+  </select>
+
+
+  <!--无条件查询-->
+  <select id="findAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tb_category
+  </select>
+
+  <!--查询父类id-->
+  <select id="selectByParentId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    from tb_category
+    where parent_id = #{parentId}
+  </select>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from tb_category
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from tb_category
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insert" parameterType="com.yzit.shop.entity.Category" >
+    insert into tb_category (id, name, parent_id, is_show, is_menu, seq)
+    values
+    (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{parentId,jdbcType=BIGINT},
+    #{isShow,jdbcType=BIT}, #{isMenu,jdbcType=BIT}, #{seq,jdbcType=INTEGER})
+  </insert>
+
+  <insert id="insertSelective" parameterType="com.yzit.shop.entity.Category" >
+    insert into tb_category
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="parentId != null" >
+        parent_id,
+      </if>
+      <if test="isShow != null" >
+        is_show,
+      </if>
+      <if test="isMenu != null" >
+        is_menu,
+      </if>
+      <if test="seq != null" >
+        seq,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null" >
+        #{parentId,jdbcType=BIGINT},
+      </if>
+      <if test="isShow != null" >
+        #{isShow,jdbcType=BIT},
+      </if>
+      <if test="isMenu != null" >
+        #{isMenu,jdbcType=BIT},
+      </if>
+      <if test="seq != null" >
+        #{seq,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.yzit.shop.entity.Category" >
+    update tb_category
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null" >
+        parent_id = #{parentId,jdbcType=BIGINT},
+      </if>
+      <if test="isShow != null" >
+        is_show = #{isShow,jdbcType=BIT},
+      </if>
+      <if test="isMenu != null" >
+        is_menu = #{isMenu,jdbcType=BIT},
+      </if>
+      <if test="seq != null" >
+        seq = #{seq,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.yzit.shop.entity.Category" >
+    update tb_category
+    set name = #{name,jdbcType=VARCHAR},
+      parent_id = #{parentId,jdbcType=BIGINT},
+      is_show = #{isShow,jdbcType=BIT},
+      is_menu = #{isMenu,jdbcType=BIT},
+      seq = #{seq,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

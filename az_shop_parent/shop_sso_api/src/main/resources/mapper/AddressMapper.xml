@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yzit.shop.dao.AddressDao" > 
+<!-- Result Map-->
+<resultMap id="BaseResultMap" type="com.yzit.shop.entity.Address" >
+    	<result column="id" property="id"/>
+    	<result column="user_id" property="userId"/>
+    	<result column="province_id" property="provinceId"/>
+    	<result column="city_id" property="cityId"/>
+    	<result column="town_id" property="townId"/>
+    	<result column="mobile" property="mobile"/>
+    	<result column="address" property="address"/>
+    	<result column="contact" property="contact"/>
+    	<result column="is_default" property="isDefault"/>
+    	<result column="notes" property="notes"/>
+    	<result column="create_date" property="createDate"/>
+    	<result column="alias" property="alias"/>
+</resultMap>
+<!-- $!{tableName} table all fields -->
+<sql id="Base_Column_List" >
+	 id,user_id,province_id,city_id,town_id,mobile,address,contact,is_default,notes,create_date,alias
+</sql>
+   
+   
+<!-- 查询条件 -->
+<sql id="Example_Where_Clause">
+where 1=1
+<trim  suffixOverrides="," >
+	<if test="id != null" >
+	    and id = #{id}
+	</if>
+	<if test="userId != null and userId != ''" >
+	    and user_id = #{userId}
+	</if>
+	<if test="provinceId != null and provinceId != ''" >
+	    and province_id = #{provinceId}
+	</if>
+	<if test="cityId != null and cityId != ''" >
+	    and city_id = #{cityId}
+	</if>
+	<if test="townId != null and townId != ''" >
+	    and town_id = #{townId}
+	</if>
+	<if test="mobile != null and mobile != ''" >
+	    and mobile = #{mobile}
+	</if>
+	<if test="address != null and address != ''" >
+	    and address = #{address}
+	</if>
+	<if test="contact != null and contact != ''" >
+	    and contact = #{contact}
+	</if>
+	<if test="isDefault != null and isDefault != ''" >
+	    and is_default = #{isDefault}
+	</if>
+	<if test="notes != null and notes != ''" >
+	    and notes = #{notes}
+	</if>
+	<if test="createDate != null" >
+	    and create_date = #{createDate}
+	</if>
+	<if test="alias != null and alias != ''" >
+	    and alias = #{alias}
+	</if>
+</trim>
+</sql>
+
+<select id="findDefaultAddress" resultMap="BaseResultMap">
+	select * from tb_address where is_default = 1
+</select>
+   
+<!--修改默认地址为0-->
+<update id="deleteDefulatAddress" >
+		update tb_address set is_default = 0 where user_id = #{userId}
+</update>
+
+<!--修改默认地址为1-->
+<update id="updateDefulatAddress" >
+	update tb_address set  is_default =1 where  id  = #{id}
+</update>
+
+
+<!-- 插入记录 -->
+<insert id="save" parameterType="com.yzit.shop.entity.Address" >
+  insert into tb_address(id,user_id,province_id,city_id,town_id,mobile,address,contact,is_default,notes,create_date,alias)
+ values(#{id},#{userId},#{provinceId},#{cityId},#{townId},#{mobile},#{address},#{contact},#{isDefault},#{notes},#{createDate},#{alias})
+</insert>
+
+<!-- 根据id，修改记录-->  
+ <update id="update" parameterType="com.yzit.shop.entity.Address" >
+  update tb_address set user_id=#{userId},province_id=#{provinceId},city_id=#{cityId},town_id=#{townId},mobile=#{mobile},address=#{address},contact=#{contact},is_default=#{isDefault},notes=#{notes},create_date=#{createDate},alias=#{alias} where id=#{id}
+ </update>
+ 
+ <!-- 修改记录，只修改只不为空的字段 -->
+<update id="updateBySelective" parameterType="com.yzit.shop.entity.Address" >
+	update tb_address set 
+	<trim  suffixOverrides="," >
+	<if test="userId != null  and userId != '' ">
+		user_id=#{userId},
+	</if>
+	<if test="provinceId != null  and provinceId != '' ">
+		province_id=#{provinceId},
+	</if>
+	<if test="cityId != null  and cityId != '' ">
+		city_id=#{cityId},
+	</if>
+	<if test="townId != null  and townId != '' ">
+		town_id=#{townId},
+	</if>
+	<if test="mobile != null  and mobile != '' ">
+		mobile=#{mobile},
+	</if>
+	<if test="address != null  and address != '' ">
+		address=#{address},
+	</if>
+	<if test="contact != null  and contact != '' ">
+		contact=#{contact},
+	</if>
+	<if test="isDefault != null  and isDefault != '' ">
+		is_default=#{isDefault},
+	</if>
+	<if test="notes != null  and notes != '' ">
+		notes=#{notes},
+	</if>
+	<if test="createDate != null  ">
+		create_date=#{createDate},
+	</if>
+	<if test="alias != null  and alias != '' ">
+		alias=#{alias},
+	</if>
+	</trim> where id=#{id}
+	
+	
+	
+</update>
+
+<!-- 删除记录 -->
+<delete id="delById" parameterType="java.lang.Long">
+	delete from tb_address where  id =#{id}
+</delete>
+ 
+<!-- 根据id查询 地址表 -->
+<select id="findById"  resultMap="BaseResultMap" parameterType="java.lang.Long">
+	select <include refid="Base_Column_List"/>
+	from tb_address  where  id = #{id}
+</select>
+
+<!-- 检索所有的记录 -->
+<select id="findAll"  resultMap="BaseResultMap" >
+	select 
+	<include refid="Base_Column_List"/>
+	from tb_address 
+</select>
+  	
+<!-- 查询地址表列表 -->
+<select id="findByList" resultMap="BaseResultMap"  parameterType="com.yzit.shop.entity.Address">
+	select 
+	<include refid="Base_Column_List"/>
+	from tb_address 
+	<include refid="Example_Where_Clause"/>
+	<!--  limit  #{startIndex} ,#{pageSize} -->
+</select>
+  	
+</mapper>   

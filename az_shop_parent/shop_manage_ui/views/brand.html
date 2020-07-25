@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>品牌表管理</title>
+   <script src="../../static/vue/vue.min.js"></script>
+    <script src="../../static/vue/axios.min.js"></script>
+    <script src="../../static/vue/qs.js"></script>
+    <link rel="stylesheet" href="../../static/elementUI/index.css">
+    <script src="../../static/elementUI/index.js"></script>
+
+    <style>
+        .avatar-uploader .el-upload {
+            border: 1px dashed #d9d9d9;
+            border-radius: 6px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        .avatar-uploader .el-upload:hover {
+            border-color: #409EFF;
+        }
+        .avatar-uploader-icon {
+            font-size: 28px;
+            color: #8c939d;
+            width: 178px;
+            height: 178px;
+            line-height: 178px;
+            text-align: center;
+        }
+        .avatar {
+            width: 178px;
+            height: 178px;
+            display: block;
+        }
+    </style>
+
+</head>
+<body>
+    <div id="app">
+        <el-card class="box-card">
+            <div slot="header">
+                品牌名称: <el-input  v-model="formData.name"
+                                style="width:220px" placeholder="品牌名称"></el-input>
+                品牌首字母: <el-input v-model="formData.letter"
+                                 style="width:220px" placeholder="品牌首字母"></el-input>
+
+                <el-button type="primary" @click="loadBrands"
+                            icon="el-icon-search">查询</el-button>
+                <el-button type="primary"
+                           @click="dialogVisible = true;app.brandForm = {}"
+                           icon="el-icon-edit">新增</el-button>
+            </div>
+            <el-table
+                    :data="pageInfo.list"
+                    border
+                    stripe
+                    height="480"
+                    @selection-change="handleSelectionChange"
+                    style="width: 100%">
+                <el-table-column
+                        prop="id"
+                        type="selection"
+                        label="编号">
+                </el-table-column>
+				  <el-table-column prop="name" width="150" label="品牌名称"></el-table-column>
+				  <el-table-column prop="letter" width="150" label="品牌首字母"></el-table-column>
+				  <el-table-column prop="image" width="150" label="品牌图片地址"></el-table-column>
+				  <el-table-column prop="seq" width="150" label="排序"></el-table-column>
+				
+                <el-table-column fixed="right" label="操作">
+                    <template slot-scope="scope">
+                        <el-button type="primary" @click="handleEdit(scope.row)" size="small">修改</el-button>
+                        <el-button type="danger" @click="handleDelete(scope.row)" size="small">删除</el-button>
+                    </template>
+                </el-table-column>
+
+            </el-table>
+        </el-card>
+        <el-card class="box-card" align="center">
+        	<!--  分页组件 -->
+			 <el-pagination
+					@size-change="handleSizeChange"
+					@current-change="handleCurrentChange"
+					:current-page="formData.pageNo"
+					:page-sizes="[5, 10, 30, 50]"
+					:page-size="formData.pageSize"
+					layout="total, sizes, prev, pager, next, jumper"
+					:total="pageInfo.total">
+			</el-pagination>
+			
+        </el-card>
+
+        <el-dialog title="品牌编辑" :before-close="handleClose" :visible.sync="dialogVisible" width="40%">
+            <!-- 给form表单添加一个名字 ref="名称" -->
+            <el-form label-position="right" :rules="rules" ref="brandForm" label-width="100px" size="small" :model="brandForm">
+
+                <el-form-item label="品牌名称" prop="name">
+                    <el-input v-model="brandForm.name"></el-input>
+                </el-form-item>
+
+                <el-form-item label="品牌首字母" prop="letter">
+                    <el-input v-model="brandForm.letter"></el-input>
+                </el-form-item>
+
+                <el-form-item label="图片" prop="image">
+                    <!-- 文件上传-->
+                    <el-upload
+                            class="avatar-uploader"
+                            action="http://api.shop.com/api/common/upload/nginx"
+                            :show-file-list="false"
+                            :on-success="handleAvatarSuccess"
+                            :before-upload="beforeAvatarUpload">
+                        <img v-if="brandForm.image" :src="brandForm.image" class="avatar">
+                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                    </el-upload>
+
+                </el-form-item>
+
+                <el-form-item label="排序" prop="seq">
+                    <el-input v-model="brandForm.seq"></el-input>
+                </el-form-item>
+
+            </el-form>
+
+            <span slot="footer" class="dialog-footer">
+            <el-button @click="dialogVisible = false">取 消</el-button>
+			<el-button type="primary"  v-if="brandForm.id > 0 " @click="updateBrand('brandForm')">确 定</el-button>
+			<el-button type="primary"  v-else @click="saveBrand('brandForm')">确 定</el-button>
+	 
+        </span>
+        </el-dialog>
+    </div>
+
+    <script>
+        var baseUrl = "http://localhost:90";
+        //var baseUrl = "http://api.shop.com";
+    </script>
+    <script src="../static/js/brand.js"></script>
+</body>
+</html>

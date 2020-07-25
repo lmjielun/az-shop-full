@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<!--[@adListTag  count="4" code="INDEX_JINRITUIJIAN"]
+[#list  dataList as ad ]
+<li class="yui3-u-5-24">
+    <a href="${ad.url}" target="_blank"><img src="${ad.pic}" /></a>
+</li>
+[/#list]
+[/@adListTag]-->
+
+
+[@goodsImageTag categoryId="10"]
+    [#list goodsList as g]
+        ${g.imgSrc}
+    [/#list]
+[/@goodsImageTag]
+
+</body>
+</html>

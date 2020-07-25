@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>测试</title>
+
+    <script src="plugins/vue/vue.min.js"></script>
+    <script src="plugins/vue/axios.min.js"></script>
+    <script src="plugins/jquery/jquery-3.2.1.min.js"></script>
+    <script src="util.js"></script>
+    <script src="plugins/vue/qs.js"></script>
+
+</head>
+<body>
+
+
+<div  id="payApp">
+{{name}}
+        <div id="body1" class="show" name="divcontent">
+            <dl class="content">
+                <dt>商户订单号 ：</dt>
+                <dd>
+                    <input  v-model="formData.orderNo" />
+                </dd>
+                <hr class="one_line">
+                <dt>订单名称 ：</dt>
+                <dd>
+                    <input  v-model="formData.subject" />
+                </dd>
+                <hr class="one_line">
+                <dt>付款金额 ：</dt>
+                <dd>
+                    <input  v-model="formData.amount" />
+                </dd>
+                <hr class="one_line">
+                <dt>订单描述：</dt>
+                <dd>
+                    <input  v-model="formData.body" />
+                </dd>
+                <hr class="one_line">
+                <dt></dt>
+
+            </dl>
+        </div>
+
+        <input type="button"  value="支付"  @click="pay" >
+
+</div>
+
+<script>
+
+    var    app = new Vue({
+        el:"#payApp",
+        data:{
+            formData:{},//表单
+            name:'张三',
+            formContent:"<h1>111</h1>",
+        },
+        methods: {
+            pay:function () {
+                alert("123123132123123");
+                //this。formDate是json对象，分装分页查询跳进
+                let   urlStr = Qs.stringify(this.formData);
+                // 添加之前先删除一下，如果单页面，页面不刷新，添加进去的内容会一直保留在页面中，二次调用form表单会出错
+                axios.get("http://localhost:8080/api/alipay/pay?"+urlStr).then(function(reason){
+                    //reason.data == ajaxresult对象
+                    console.log(reason.data.data);
+
+                    const div = document.createElement('div');
+                    /* 此处form就是后台返回接收到的数据 */
+                    div.innerHTML = reason.data.data;
+                    document.body.appendChild(div)
+                    document.forms[0].submit()
+                }).catch(function (reason) { // 错误响应的处理函数 , reason: 错误信息  400 404 502 302 500..
+                    //app.$message.error('出错了，加载参数失败');
+                    alert(reason);
+                });
+            },
+        }
+    });
+</script>
+</body>
+</html>

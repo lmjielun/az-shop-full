@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE">
+    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+    <title>产品详情页</title>
+
+    <!-- freemaker-->
+    [#assign ctx=request.contextPath /]
+    <link rel="icon" href="assets/img/favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="${ctx}/css/webbase.css" />
+    <link rel="stylesheet" type="text/css" href="${ctx}/css/pages-item.css" />
+    <link rel="stylesheet" type="text/css" href="${ctx}/css/pages-zoom.css" />
+    <link rel="stylesheet" type="text/css" href="${ctx}/css/widget-cartPanelView.css" />
+
+</head>
+
+<body>
+
+<!--页面顶部 开始-->
+通过include指令包含 inc/nav-bottom.html
+
+
+<!--页面顶部 结束-->
+<div id="goodsDetailAPP"  class="py-container">
+    <div id="item" >
+        <!--商品分类面包屑-->
+        <div class="crumb-wrap">
+            <ul class="sui-breadcrumb">
+                <!--获取商品一级分类-->
+                [#if category1??]
+                <!--然后a标签展示商品分类名称，以及连接-->
+                <li>
+                    <a href="${ctx}/category/${category1.id}">${category1.name}</a>
+                </li>
+                [/#if]
+                <!--获取商品二级分类-->
+                [#if category2??]
+                <!--然后a标签展示商品分类名称，以及连接-->
+                <li>
+                    <a href="${ctx}/category/${category2.id}">${category2.name}</a>
+                </li>
+                [/#if]
+                <!--获取商品三级分类-->
+                [#if category3??]
+                <!--然后a标签展示商品分类名称，以及连接-->
+                <li>
+                    <a href="${ctx}/category/${category3.id}">${category3.name}</a>
+                </li>
+                [/#if]
+            </ul>
+        </div>
+        <!--product-info-->
+        <div class="product-info">
+            <div class="fl preview-wrap">
+                <!--放大镜效果-->
+                <div class="zoom">
+                    <!--默认第一个预览-->
+                    <div id="preview" class="spec-preview">
+                        <span class="jqzoom"><img jqimg="${goods.image}" src="${goods.image}"  width="400px" height="500px"/></span>
+                    </div>
+                    <!--下方的缩略图-->
+                    <div class="spec-scroll">
+                        <a class="prev">&lt;</a>
+                        <!--左右按钮-->
+                        <div class="items">
+                            <ul>
+                                <!--获取商品图片列表-->
+                                [#list  goods.imageList as image]
+                                <li><img src="${image.imgSrc}" bimg="${image.imgSrc}"
+                                         onmousemove="preview(this)"
+                                         width="400px" height="500px"/></li>
+                                [/#list]
+                            </ul>
+                        </div>
+                        <a class="next">&gt;</a>
+                    </div>
+                </div>
+            </div>
+            <div class="fr itemInfo-wrap">
+                <div class="sku-name">
+
+
+                    <h4>${goods.goodsName}   <span v-for="(skuSpec,skuSpecIndex) in skuObj.specList">{{skuSpec.text}}-{{skuSpec.value}}  </span></h4>
+                </div>
+                <div class="news"><span>推荐选择下方[移动优惠购],手机套餐齐搞定,不用换号,每月还有花费返</span></div>
+                <div class="summary">
+                    <div class="summary-wrap">
+                        <div class="fl title">
+                            <i>价　　格</i>
+                        </div>
+                        <div class="fl price">
+                            <i>¥</i>
+                            <em>{{skuObj.price}}</em>
+                            <span>降价通知</span>
+                        </div>
+                        <div class="fr remark">
+                            <i>累计评价</i><em>612188</em>
+                        </div>
+                    </div>
+                    <div class="summary-wrap">
+                        <div class="fl title">
+                            <i>促　　销</i>
+                        </div>
+                        <div class="fl fix-width">
+                            <i class="red-bg">加价购</i>
+                            <em class="t-gray">满999.00另加20.00元，或满1999.00另加30.00元，或满2999.00另加40.00元，即可在购物车换
+                                购热销商品</em>
+                        </div>
+                    </div>
+                </div>
+                <div class="support">
+                    <div class="summary-wrap">
+                        <div class="fl title">
+                            <i>支　　持</i>
+                        </div>
+                        <div class="fl fix-width">
+                            <em class="t-gray">以旧换新，闲置手机回收  4G套餐超值抢  礼品购</em>
+                        </div>
+                    </div>
+                    <div class="summary-wrap">
+                        <div class="fl title">
+                            <i>配 送 至</i>
+                        </div>
+                        <div class="fl fix-width">
+                            <em class="t-gray">满999.00另加20.00元，或满1999.00另加30.00元，或满2999.00另加40.00元，即可在购物车换购热销商品</em>
+                        </div>
+                    </div>
+                </div>
+                <div class="clearfix choose">
+                    <div id="specification" class="summary-wrap clearfix">
+                        <!--规格-->
+                       12321
+                        <dl  v-for="(goodsSpec,goodsSpecIndex)  in goodsSpecList ">
+                            <dt>
+                                <div class="fl title">
+                                    <i>{{ goodsSpec.text}}</i>
+                                </div>
+                            </dt>
+                            <!--选中规格-->
+                            <dd v-for="(goodsSpeceItem,goodsSpecItemsIndex)  in goodsSpec.items">
+                                <!--添加sku点击函数，将用户所选中的sku与 原来的sku进行比对，看用户所选中的sku是否存在，如果存在可选中，否则提示不存在-->
+                                <a href="javascript:;" @click="changeSKU(goodsSpec.text,goodsSpeceItem.text)"
+                                   :class="isSelected(goodsSpec.text,goodsSpeceItem.text)? 'selected':'' ">{{goodsSpeceItem.text}}</a></dd>
+                        </dl>
+                    </div>
+
+                    <div class="summary-wrap">
+                        <div class="fl title">
+                            <div class="control-group">
+                                <div class="controls">
+                                    <input autocomplete="off" type="text" value="1" minnum="1" class="itxt" />
+                                    <a href="javascript:void(0)" class="increment plus">+</a>
+                                    <a href="javascript:void(0)" class="increment mins">-</a>
+                                </div>
+                            </div>
+                        </div>
+                        {{cart}}
+                        <div class="fl">
+                            <ul class="btn-choose unstyled">
+                                <li>
+                                    <a href="javascript:void(0)" @click="addCart" class="sui-btn  btn-danger addshopcar">加入购物车</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--product-detail-->
+        <div class="clearfix product-detail">
+            <div class="fl aside">
+                使用freemarker自定义标签，实现相关分类，推荐品牌
+
+            </div>
+            <div class="fr detail">
+                使用freemarker自定义标签，相关搭配
+
+                <div class="tab-main intro">
+                    <ul class="sui-nav nav-tabs tab-wraped">
+                        <li class="active">
+                            <a href="#one" data-toggle="tab">
+                                <span>商品介绍</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#two" data-toggle="tab">
+                                <span>规格与包装</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#three" data-toggle="tab">
+                                <span>售后保障</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#four" data-toggle="tab">
+                                <span>商品评价</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#five" data-toggle="tab">
+                                <span>手机社区</span>
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                    <div class="tab-content tab-wraped">
+                        <div id="one" class="tab-pane active">
+                            <ul class="goods-intro unstyled">
+                                <li>分辨率：1920*1080(FHD)</li>
+                                <li>商品介绍</li>
+                                <!--商品名称-->
+                                <li>${goods.goodsName}</li>
+                                <!--商品属性-->
+                                [#assign goodsAttrList = (goods.attrItems)?eval /]
+                                [#list goodsAttrList as attr]
+                                <li>${attr.text}   :  ${attr.value}</li>
+                                [/#list]
+
+                                <!--商品规格-->
+                                [#assign goodsSpecList = (goods.specItems)?eval /]
+                                [#list goodsSpecList as spec]
+                                <li>${spec.text} :
+                                    [#list (spec.items) as specItems]
+                                    ${specItems.text}
+                                [/#list]
+                                </li>
+                                 [/#list]
+                            </ul>
+                            <div class="intro-detail">
+                                商品简介
+
+                            </div>
+                            <div class="intro-detail">
+                                <img src="${goods.image}" />
+                            </div>
+                        </div>
+                        <div id="two" class="tab-pane">
+                            <p>规格与包装</p>
+                            [#assign goodsParamList = (goods.paraItems)?eval /]
+                            [#list goodsParamList as param]
+                            <div class="Ptable-item">
+                                <h3>${param.text}</h3>
+                                <dl>
+                                    [#list (param.items) as paramItem]
+                                    <dl class="clearfix" style="margin:0">
+                                        <dt>${paramItem.text}</dt><dd>${paramItem.value}</dd>
+                                    </dl>
+                                [/#list]
+                                </dl>
+                            </div>
+                                [/#list]
+                        </div>
+                        <div id="three" class="tab-pane">
+                            <p>售后保障</p>
+                            <p>${goods.saleService}</p>
+                        </div>
+                        <div id="four" class="tab-pane">
+                            <p>商品评价</p>
+                        </div>
+                        <div id="five" class="tab-pane">
+                            <p>手机社区</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--like-->
+        <div class="clearfix"></div>
+        使用freemarker自定义标签，实现  猜你喜欢
+
+    </div>
+</div>
+</div>
+<!-- 底部栏位 -->
+
+<!--页面底部  开始 -->
+通过include指令包含 inc/footer.html
+
+<script type="text/javascript" src="${ctx}/js/plugins/jquery/jquery.min.js"></script>
+<script type="text/javascript">
+    $(function(){
+        $("#service").hover(function(){
+            $(".service").show();
+        },function(){
+            $(".service").hide();
+        });
+        $("#shopcar").hover(function(){
+            $("#shopcarlist").show();
+        },function(){
+            $("#shopcarlist").hide();
+        });
+
+    })
+</script>
+<script type="text/javascript" src="${ctx}/js/model/cartModel.js"></script>
+<script type="text/javascript" src="${ctx}/js/plugins/jquery.easing/jquery.easing.min.js"></script>
+<script type="text/javascript" src="${ctx}/js/plugins/sui/sui.min.js"></script>
+<script type="text/javascript" src="${ctx}/js/plugins/jquery.jqzoom/jquery.jqzoom.js"></script>
+<script type="text/javascript" src="${ctx}/js/plugins/jquery.jqzoom/zoom.js"></script>
+<script type="text/javascript" src="${ctx}/index/index.js"></script>
+
+
+<!-- 引入vue环境-->
+<script src="${ctx}/plugins/vue/vue.min.js"></script>
+<script src="${ctx}/plugins/vue/axios.min.js"></script>
+<script type="text/javascript" src="${ctx}/plugins/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="${ctx}/plugins/jquery.cookie.js"></script>
+<script type="text/javascript" src="${ctx}/util.js"></script>
+
+<script>
+    // 从cookie获取用户的token
+    var USER_TOKEN =$.cookie('USER_TOKEN');
+    var  app =  new Vue({
+        el:"#goodsDetailAPP",
+        data:{
+            //商品的规格集合
+            // 格式：[{"items":[{"text":"红色"},{"text":"白色"}],"text":"服装颜色"},
+            //      {"items":[{"text":"XXXL"},{"text":"XXL"}],"text":"服装尺码"}]
+            goodsSpecList:[],
+            //默认的sku对象，里边有规格集合
+            skuObj:{specList:[]},
+            //sku列表  格式：[{id ,name :, specList:[]}]
+            skuList :[],
+            // 用户选中的规格,就是用户点击哪个规格，这里边就存放哪个规格
+            userSpecList:[],
+            // 购物车
+            cart:{},
+            // 用户
+            user:{},
+        },
+        // 在页面初始化完成的时候调用
+        created:function () {
+            this.initData();//初始化数据
+        },
+        methods:{
+            initData:function(){
+                //加载sku信息，转换sku信息
+                //this.skuObj= JSON.parse(JSON.stringify(${sku?string}));
+                //加载商品的规格信息，以及转换
+                this.goodsSpecList  = $.parseJSON('${goods.specItems?string}')
+                //加载sku信息
+                // 定义一个临时的sku对象，为了和用户选择规格不一样
+                let  skuObjTemp= JSON.parse(JSON.stringify(${sku?string})) ;
+                // 定义一个临时的sku规格数组
+                let skuSpecTemp =  $.parseJSON(skuObjTemp.specs);
+                // 然后给sku对象 和 sku对象的规格集合进行赋值
+                this.skuObj = skuObjTemp;
+                this.skuObj.specList = skuSpecTemp;
+                // 加载skulist集合
+                let skuListTemp = JSON.parse(JSON.stringify(${skuList?string}));
+                // sku的规格集合临时变量
+                let skuSpecListTemp = [];
+                // 循环sku的list集合
+                for(let i=0;i<skuListTemp.length;i++){
+                    //将sku里的规格值集合 赋值给sku规格集合
+                    skuSpecListTemp =  $.parseJSON(  skuListTemp[i].specs) ;
+                    // 然后循环添加进sku规格集合 ,将值原来的skuList进行改变
+                    this.skuList.push({"goodsId":skuListTemp[i].goodsId,"id":skuListTemp[i].id,
+                        "num":skuListTemp[i].num,"price":skuListTemp[i].price,skuSpecList:skuSpecListTemp})
+                }
+
+                // 加载完sku信息，初始化用户所选中的规格 就是userSpecList
+                for(let k = 0; k < this.skuObj.specList.length;k++){
+                    // 将用户选中的信息，放入到userSpecList中
+                    this.userSpecList.push({"text":this.skuObj.specList[k].text,"value":this.skuObj.specList[k].value})
+                }
+
+            },
+
+            // 判断用户选中sku
+            isSelected:function (specName,specItem) {//specName 规格名称  specItem 规格选项
+                // 与默认的sku的specList对比，如果规格名称与规格值存在就返回true，如果不存在就返回false
+                for(let i =0;i< this.skuObj.specList.length ; i++  ){
+                    if(  ( this.skuObj.specList[i].text == specName) && ( this.skuObj.specList[i].value == specItem)   ){
+                        return  true;
+                    }
+                }
+                return false;
+            },
+
+            // 更改sku信息
+            changeSKU:function (specName,specItem) {
+                // 修改用户选中的规格
+                for(let i = 0 ; i < this.userSpecList.length;i++){
+                    // 判断传递过来的规格名 与  用不选择的规格名是否相同
+                    if(specName == this.userSpecList[i].text ){
+                        // 如果相等的话 给 用户选择的进行赋值
+                        this.userSpecList[i].value=specItem;
+                    }
+                }
+                // 判断用户选中的规格，在skuList集合中是否存在
+                let flag = false;
+                // 目的：根据用户选中的规格，查询sku列表
+                for(let n = 0 ; n<this.skuList.length;n++){ // 获取一个sku对象
+                    // 给flag赋值，正确返回true,错误返回false ,调用arrSame
+                    flag = arrSame(this.skuList[n].skuSpecList , this.userSpecList)
+                    // 判断flag的值
+                    if(flag ){ // 如果flag是true，给sku赋值
+                        this.skuObj = {"goodsId": this.skuList[n].goodsId, "id": this.skuList[n].id,
+                            "num": this.skuList[n].num,price:this.skuList[n].price,
+                            specList :this.skuList[n].skuSpecList
+                        }
+                        break;
+                    }
+                }
+                // 如果
+                if(!flag){
+                    alert("该sku不存在");
+                }
+            },
+
+            // 添加购物车
+            addCart:function () {
+                alert( "商品编号"+this.skuObj.goodsId+";skuid = "+this.skuObj.id);
+                app.cart = {
+                    "goodsId":app.skuObj.goodsId,
+                    "skuId":app.skuObj.id,
+                    "title":app.skuObj.name,
+                    "image":'${goods.image}',
+                    "num":1,
+                    "price":app.skuObj.price,
+                    "skuSpecList":app.skuObj.specList
+                };
+                // 调用接口,根据token获取用户信息
+                // 1、token是否为null，
+                if(USER_TOKEN != null || USER_TOKEN != ''){
+                    //如果不是null，向登录的接口发送请求,根据token获取用户信息
+                    axios.get("http://api.sso.shop.com/api/user/token/"+USER_TOKEN).then(function (value) {
+                        // 判断返回结果 如果为true,说明用户已登录
+                        if(value.data.success){
+                            // 给user赋值
+                            app.user = value.data.obj;
+                            // 说明用户不为空
+                            // 发送axios请求，将商品添加到用户的购物车
+                            alert("将购物车添加到redis中")
+                            axios.post("http://api.cart.shop.com/api/cart/addCart/"+app.user.id,app.cart).then(function (response) {
+                                if(response.data.success){
+                                    alert("购物车添加Redis成功")
+                                }else{
+                                    alert("添加购物车失败："+response.data.message);
+                                }
+                            })
+                        }else{ // 说明用户未登录，未登录，就查找cookie的数据
+
+                            // 获取cookie中的用户的购物车，此时是字符串
+                            let userCartStr = $.cookie('USER_MYCART');
+                            alert("userCartStr = = " + $.cookie('USER_MYCART') )
+                            // 定义用户的购物车，为array数组
+                            let userCartList = [];
+
+                            // 判断cookie中的用户的字符串 是否为空
+                            if(userCartStr != null && userCartStr!=''){
+                                // 不为空，将json字符串转为json数组
+                                userCartList = $.parseJSON(userCartStr);
+                            }
+
+                            // 定义变量，表示购物车是否存在：默认不存在
+                            var isExit = false;
+
+                            // 遍历购物车数组
+                            if(userCartList.length > 0){
+                                for (let i = 0 ; i < userCartList.length; i++) {
+                                    // 判断新添加的商品 在 购物车中是否已经存在
+                                    if(userCartList[i].skuId == app.cart.skuId){
+                                        // 相等，说名存在，存在的话，直接添加该商品数量
+                                        userCartList[i].num = userCartList[i].num + app.cart.num;
+                                        // 改变标识符
+                                        isExit = true;
+                                        // 结束循环
+                                        break;
+                                    }
+                                }
+                            }
+                            // 判断isExit的值，如果值是false，说明商品在原购物车不存在
+                            if(!isExit){
+                                // 将购买的商品添加到购物车
+                                userCartList.push(app.cart)
+                            }
+
+                            // 将新的购物车保存到cookie中
+                            userCartStr = JSON.stringify(userCartList);
+                            // 设置cookie
+                            $.cookie('USER_MYCART',userCartStr,{
+                                expires:7,   //过期时间7天
+                                path:'/',    // 设置路径
+                                domain:'shop.com' // 设置所在的域名
+                            })
+                            alert("将购物车添加到cookie中成功")
+                        }
+                    })
+                }
+            }
+        }
+    });
+
+    /**
+     * 验证两个object 是否相同
+     * @param {Object} obj  [需要进行验证的数据1]
+     * @param {Object} newObj [需要进行验证的数据2]
+     */
+    function objSame (obj,newObj) {
+        let bol = true;
+        if (Object.keys(obj).length != Object.keys(newObj).length) {
+            return false;
+        }
+        for(let key in obj) {
+            if ( obj[key] instanceof Object) {
+                bol = objSame(obj[key],newObj[key]);
+                if (!bol) {
+                    break;
+                }
+            } else if ( obj[key] instanceof Array) {
+                bol = arrSame(obj[key],newObj[key])
+                if (!bol) {
+                    break;
+                }
+            } else if (obj[key] != newObj[key]) {
+                bol =  false;
+                break;
+            }
+        }
+        return bol
+    }
+    /**
+     * 验证两个数组是否相同
+     * @param {Array} arr  [需要进行验证的数据1]
+     * @param {Array} newArr [需要进行验证的数据2]
+     */
+    function arrSame (arr,newArr) {
+        let bol = true;
+        if (arr.length != newArr.length) {
+            return false;
+        }
+        for (let i = 0, n = arr.length;i < n; i++) {
+            if (arr[i] instanceof Array) {
+                bol = arrSame(arr[i],newArr[i])
+                if (!bol) {
+                    break;
+                }
+            } else if (arr[i] instanceof Object) {
+                bol = objSame(arr[i],newArr[i])
+                if (!bol) {
+                    break;
+                }
+            }else if (arr[i] != newArr[i]) {
+                bol = false;
+                break;
+            }
+        }
+        return bol;
+    }
+
+
+</script>
+<!--页面底部  结束 -->
+</body>
+
+</html>
+

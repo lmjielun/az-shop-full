@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AdCategory管理</title>
+    <!--
+        绝对路径: 从根开始找
+        相对路径: 目标文件相对于当前文件所在目录(参照物)的路径
+        找 vue.min.js , 相对于当前文件(04-crud.html)所在目录(crud) 路径
+        跟window操作来确定:
+            1. 返回上一级目录,进入src : ../
+            2. 返回上一级目录,进入 11-vue-elementUI : ../
+            3. 进入static目录 static
+            4. 进入vue目录 vue
+            ../../static/vue/vue.min.js
+    -->
+	<!-- (1)引入vue，在引入elmentui的环境 -->
+	 <!--  rel="stylesheet" : 属性必须有,规定文件类型 -->
+   <script src="../../static/vue/vue.min.js"></script>
+    <script src="../../static/vue/axios.min.js"></script>
+    <script src="../../static/vue/qs.js"></script>
+    <link rel="stylesheet" href="../../static/elementUI/index.css">
+    <script src="../../static/elementUI/index.js"></script>
+	<script src="../../static/vue/qs.js"></script>
+</head>
+<body>
+    <div id="app">
+        <el-card class="box-card">
+            <div slot="header">
+                名称: <el-input size="mini" style="width:150px" placeholder="请输入内容"></el-input>
+                
+                <el-button type="primary"
+                           @click="loadAdCategorys"
+                           size="mini" icon="el-icon-search">查询</el-button>
+                <el-button type="danger"
+                           @click="clear"
+                           size="mini" icon="el-icon-close">清空</el-button>
+                <el-button type="info"
+                           @click="dialogVisible = true;adCategoryForm={};"
+                           size="mini" icon="el-icon-edit">新增</el-button>
+            <el-table
+                    :data="pageInfo.list"
+                    border
+                    stripe
+                    height="480"
+                    @selection-change="handleSelectionChange"
+                    style="width: 100%">
+                <el-table-column
+                        prop="id"
+                        type="selection"
+                        label="编号">
+                </el-table-column>
+				  <el-table-column
+                        prop="name"
+                        width="150"
+                        label="广告分类名称">
+                </el-table-column>
+				  <el-table-column
+                        prop="code"
+                        width="150"
+                        label="key值">
+                </el-table-column>
+				  <el-table-column
+                        prop="status"
+                        width="150"
+                        label="状态">
+                </el-table-column>
+				
+                <el-table-column
+                        fixed="right"
+                        label="操作">
+                    <template slot-scope="scope">
+                        <el-button type="primary"
+                                   @click="handleEdit(scope.row.id)"
+                                   size="small">修改</el-button>
+                        <el-button type="danger"
+                                   @click="handleDelete(scope.row.id)"
+                                   size="small">删除</el-button>
+                    </template>
+					
+                </el-table-column>
+            </el-table>
+        </el-card>
+        <el-card class="box-card" align="center">
+        	<!--  分页组件 -->
+			 <el-pagination
+					@size-change="handleSizeChange"
+					@current-change="handleCurrentChange"
+					:current-page="formData.pageNo"
+					:page-sizes="[5, 10, 30, 50]"
+					:page-size="formData.pageSize"
+					layout="total, sizes, prev, pager, next, jumper"
+					:total="pageInfo.total">
+			</el-pagination>
+			
+        </el-card>
+
+        <el-dialog
+                title="提示"
+                :before-close="handleClose"
+                :visible.sync="dialogVisible"
+                width="40%">
+            <!-- 给form表单添加一个名字 ref="名称" -->
+
+            <el-form label-position="right"
+                     ref="adCategoryForm"
+                     label-width="80px" size="small" :model="adCategoryForm">
+                <el-form-item label="广告分类名称">
+                    <el-input v-model="adCategoryForm.name"></el-input>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="key值">
+                    <el-input v-model="adCategoryForm.code"></el-input>
+                </el-form-item>
+                <el-form-item label="状态">
+                    <el-input v-model="adCategoryForm.status"></el-input>
+                </el-form-item>
+				<el-form-item>
+					<el-button @click="save()" type="primary">保存</el-button>
+					<el-button @click="dialogVisible = false">关闭</el-button>
+				</el-form-item>
+			</el-form>
+		</el-dialog>
+    </div>
+
+    <script>
+        var baseUrl = "http://localhost:90";
+    </script>
+
+<script src="../../static/js/adCategory.js"></script>
+</body>
+</html>

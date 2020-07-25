@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>model</title>
+    <script src="../../static/vue/vue.min.js"></script>
+    <link rel="stylesheet" href="../../static/elementUI/index.css">
+    <script src="../../static/elementUI/index.js"></script>
+    <script src="../../static/vue/axios.min.js"></script>
+</head>
+<body>
+    <div id="app">
+
+        <!-- dialog编辑框  -->
+            <el-form ref="registerForm" :rules="rules" v-model="userInfo" class="registerForm">
+                <el-form-item  label="用户名：" prop="username">
+                    <el-input v-model="userInfo.username" placeholder="请输入用户名"></el-input>
+                </el-form-item>
+
+                <el-form-item prop="password" label="登录密码：" >
+                    <el-input v-model="userInfo.password" placeholder="请输入登录密码"></el-input>
+                </el-form-item>
+            </el-form>
+
+
+            <!--按钮-->
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="dialogVisible = false">取 消</el-button>
+                <el-button type="primary"  @click="">确 定</el-button>
+             </span>
+
+
+
+    </div>
+
+    <script>
+        var baseUrl = "http://localhost:80";
+        var app = new Vue({
+            el:"#app",
+            data:{
+
+                userInfo:{
+
+                },
+                dialogVisible:false,
+
+                rules:{
+                    username:[
+                        {required: true, message: '请输入用户名', trigger: 'blur'},
+                        {min: 6, max: 16, message: '长度在 3 到 16 个字符', trigger: 'blur'}
+                    ],
+                }
+
+            },
+            created:function () {
+
+
+            },
+            methods:{
+
+                // 关闭dialog之前执行
+                handleClose:function (done) {
+                    app.$confirm("确认关闭吗?","提示")
+                        .then(function() { // 点击确定执行
+                            done(); // 关闭dialog
+                        })
+                },
+            }
+        });
+
+    </script>
+</body>
+</html>

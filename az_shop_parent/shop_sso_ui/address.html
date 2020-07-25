@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>地址表管理</title>
+	 <!--  rel="stylesheet" : 属性必须有,规定文件类型 -->
+   <script src="static/vue/vue.min.js"></script>
+    <script src="static/vue/axios.min.js"></script>
+    <script src="static/vue/qs.js"></script>
+    <link rel="stylesheet" href="static/elementUI/index.css">
+    <script src="static/elementUI/index.js"></script>
+	<script src="static/vue/qs.js"></script>
+
+</head>
+<body>
+    <div id="app">
+        <el-card class="box-card">
+            <div slot="header">
+                名称: <el-input size="mini" style="width:150px" placeholder="请输入内容"></el-input>
+                
+                <el-button type="primary"
+                           @click="loadAddresss"
+                           size="mini" icon="el-icon-search">查询</el-button>
+                <el-button type="danger"
+                           @click="clear"
+                           size="mini" icon="el-icon-close">清空</el-button>
+                <el-button type="info"
+                           @click="dialogVisible = true;addressForm={};"
+                           size="mini" icon="el-icon-edit">新增</el-button>
+            <el-table
+                    :data="pageInfo.list"
+                    border
+                    stripe
+                    height="480"
+                    @selection-change="handleSelectionChange"
+                    style="width: 100%">
+                <el-table-column
+                        prop="id"
+                        type="selection"
+                        label="编号">
+                </el-table-column>
+				  <el-table-column
+                        prop="id"
+                        width="150"
+                        label="">
+                </el-table-column>
+				  <el-table-column
+                        prop="userId"
+                        width="150"
+                        label="用户ID">
+                </el-table-column>
+				  <el-table-column
+                        prop="provinceId"
+                        width="150"
+                        label="省">
+                </el-table-column>
+				  <el-table-column
+                        prop="cityId"
+                        width="150"
+                        label="市">
+                </el-table-column>
+				  <el-table-column
+                        prop="townId"
+                        width="150"
+                        label="县/区">
+                </el-table-column>
+				  <el-table-column
+                        prop="mobile"
+                        width="150"
+                        label="手机">
+                </el-table-column>
+				  <el-table-column
+                        prop="address"
+                        width="150"
+                        label="详细地址">
+                </el-table-column>
+				  <el-table-column
+                        prop="contact"
+                        width="150"
+                        label="联系人">
+                </el-table-column>
+				  <el-table-column
+                        prop="isDefault"
+                        width="150"
+                        label="是否是默认 1默认 0否">
+                </el-table-column>
+				  <el-table-column
+                        prop="notes"
+                        width="150"
+                        label="备注">
+                </el-table-column>
+				  <el-table-column
+                        prop="createDate"
+                        width="150"
+                        label="创建日期">
+                </el-table-column>
+				  <el-table-column
+                        prop="alias"
+                        width="150"
+                        label="别名">
+                </el-table-column>
+				
+                <el-table-column
+                        fixed="right"
+                        label="操作">
+                    <!-- slot-scope = "变量名称" ,
+                    接收到当前行信息 (row , 当前行的值, column : 当前列值, $index 行索引) -->
+                    <!-- slot-scope 只能加在template标签中 -->
+                    <template slot-scope="scope">
+                        <el-button type="primary"
+                                   @click="handleEdit(scope.row.id)"
+                                   size="small">修改</el-button>
+                        <el-button type="danger"
+                                   @click="handleDelete(scope.row.id)"
+                                   size="small">删除</el-button>
+                    </template>
+					
+                </el-table-column>
+            </el-table>
+        </el-card>
+        <el-card class="box-card" align="center">
+        	<!--  分页组件 -->
+			 <el-pagination
+					@size-change="handleSizeChange"
+					@current-change="handleCurrentChange"
+					:current-page="formData.pageNo"
+					:page-sizes="[5, 10, 30, 50]"
+					:page-size="formData.pageSize"
+					layout="total, sizes, prev, pager, next, jumper"
+					:total="pageInfo.total">
+			</el-pagination>
+			
+        </el-card>
+        <!--
+            before-close : 关闭dialog之前执行, 默认传递一个done函数,执行这个函数就关闭dialog
+        -->
+        <el-dialog
+                title="提示"
+                :before-close="handleClose"
+                :visible.sync="dialogVisible"
+                width="40%">
+            <!-- 给form表单添加一个名字 ref="名称" -->
+
+            <el-form label-position="right"
+                     ref="addressForm"
+                     label-width="80px" size="small" :model="addressForm">
+                <el-form-item label="">
+                    <el-input v-model="addressForm.id"></el-input>
+                </el-form-item>
+                <el-form-item label="用户ID">
+                    <el-input v-model="addressForm.userId"></el-input>
+                </el-form-item>
+                <el-form-item label="省">
+                    <el-input v-model="addressForm.provinceId"></el-input>
+                </el-form-item>
+                <el-form-item label="市">
+                    <el-input v-model="addressForm.cityId"></el-input>
+                </el-form-item>
+                <el-form-item label="县/区">
+                    <el-input v-model="addressForm.townId"></el-input>
+                </el-form-item>
+                <el-form-item label="手机">
+                    <el-input v-model="addressForm.mobile"></el-input>
+                </el-form-item>
+                <el-form-item label="详细地址">
+                    <el-input v-model="addressForm.address"></el-input>
+                </el-form-item>
+                <el-form-item label="联系人">
+                    <el-input v-model="addressForm.contact"></el-input>
+                </el-form-item>
+                <el-form-item label="是否是默认 1默认 0否">
+                    <el-input v-model="addressForm.isDefault"></el-input>
+                </el-form-item>
+                <el-form-item label="备注">
+                    <el-input v-model="addressForm.notes"></el-input>
+                </el-form-item>
+                <el-form-item label="创建日期">
+                    <el-input v-model="addressForm.createDate"></el-input>
+                </el-form-item>
+                <el-form-item label="别名">
+                    <el-input v-model="addressForm.alias"></el-input>
+                </el-form-item>
+				<el-form-item>
+					<el-button @click="save()" type="primary">保存</el-button>
+					<el-button @click="dialogVisible = false">关闭</el-button>
+				</el-form-item>
+			</el-form>
+		</el-dialog>
+    </div>
+
+    <script>
+        var baseUrl = "http://localhost:85";
+    </script>
+
+<script src="static/js/address.js"></script>
+</body>
+</html>

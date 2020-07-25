@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yzit.shop.dao.AttrMapper" >
+  <resultMap id="BaseResultMap" type="com.yzit.shop.entity.Attr" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="category_id" property="categoryId" jdbcType="BIGINT" />
+    <result column="attr_items" property="attrItems" jdbcType="VARCHAR" />
+    <result column="seq" property="seq" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, name, category_id, attr_items, seq
+  </sql>
+
+
+  <!--条件查询-->
+  <select id="findByList" parameterType="com.yzit.shop.entity.Attr" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tb_attr
+    <where>
+      <if test="name != null and name !=''">
+        and name like concat('%',#{name},'%')
+      </if>
+      <if test="categoryId !=null and categoryId != ''">
+        and category_id = #{categoryId}
+      </if>
+    </where>
+  </select>
+
+  <select id="findAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tb_attr
+  </select>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from tb_attr
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from tb_attr
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.yzit.shop.entity.Attr" >
+    insert into tb_attr (id, name, category_id, 
+      attr_items, seq)
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{categoryId,jdbcType=BIGINT}, 
+      #{attrItems,jdbcType=VARCHAR}, #{seq,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.yzit.shop.entity.Attr" >
+    insert into tb_attr
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="categoryId != null" >
+        category_id,
+      </if>
+      <if test="attrItems != null" >
+        attr_items,
+      </if>
+      <if test="seq != null" >
+        seq,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="categoryId != null" >
+        #{categoryId,jdbcType=BIGINT},
+      </if>
+      <if test="attrItems != null" >
+        #{attrItems,jdbcType=VARCHAR},
+      </if>
+      <if test="seq != null" >
+        #{seq,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.yzit.shop.entity.Attr" >
+    update tb_attr
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="categoryId != null" >
+        category_id = #{categoryId,jdbcType=BIGINT},
+      </if>
+      <if test="attrItems != null" >
+        attr_items = #{attrItems,jdbcType=VARCHAR},
+      </if>
+      <if test="seq != null" >
+        seq = #{seq,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.yzit.shop.entity.Attr" >
+    update tb_attr
+    set name = #{name,jdbcType=VARCHAR},
+      category_id = #{categoryId,jdbcType=BIGINT},
+      attr_items = #{attrItems,jdbcType=VARCHAR},
+      seq = #{seq,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

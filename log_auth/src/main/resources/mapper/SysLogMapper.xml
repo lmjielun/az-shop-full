@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yzit.shop.dao.SysLogDao" > 
+<!-- Result Map-->
+<resultMap id="BaseResultMap" type="com.yzit.shop.entity.SysLog" >
+    	<result column="id" property="id"/>
+    	<result column="types" property="types"/>
+    	<result column="title" property="title"/>
+    	<result column="create_by" property="createBy"/>
+    	<result column="start_date" property="startDate"/>
+    	<result column="end_date" property="endDate"/>
+    	<result column="remote_addr" property="remoteAddr"/>
+    	<result column="request_uri" property="requestUri"/>
+    	<result column="method" property="method"/>
+    	<result column="params" property="params"/>
+    	<result column="exceptions" property="exceptions"/>
+</resultMap>
+<!-- $!{tableName} table all fields -->
+<sql id="Base_Column_List" >
+	 id,types,title,create_by,start_date,end_date,remote_addr,request_uri,method,params,exceptions
+</sql>
+   
+   
+<!-- 查询条件 -->
+<sql id="Example_Where_Clause">
+where 1=1
+<trim  suffixOverrides="," >
+	<if test="id != null" >
+	    and id = #{id}
+	</if>
+	<if test="types != null and types != ''" >
+	    and types = #{types}
+	</if>
+	<if test="title != null and title != ''" >
+	    and title = #{title}
+	</if>
+	<if test="createBy != null" >
+	    and create_by = #{createBy}
+	</if>
+	<if test="startDate != null" >
+	    and start_date = #{startDate}
+	</if>
+	<if test="endDate != null" >
+	    and end_date = #{endDate}
+	</if>
+	<if test="remoteAddr != null and remoteAddr != ''" >
+	    and remote_addr = #{remoteAddr}
+	</if>
+	<if test="requestUri != null and requestUri != ''" >
+	    and request_uri = #{requestUri}
+	</if>
+	<if test="method != null and method != ''" >
+	    and method = #{method}
+	</if>
+	<if test="params != null" >
+	    and params = #{params}
+	</if>
+	<if test="exceptions != null" >
+	    and exceptions = #{exceptions}
+	</if>
+</trim>
+</sql>
+   
+
+<!-- 插入记录 -->
+<insert id="save" parameterType="com.yzit.shop.entity.SysLog" >
+  insert into t_sys_log(id,types,title,create_by,start_date,end_date,remote_addr,request_uri,method,params,exceptions)
+ values(#{id},#{types},#{title},#{createBy},#{startDate},#{endDate},#{remoteAddr},#{requestUri},#{method},#{params},#{exceptions})
+</insert>
+
+<!-- 根据id，修改记录-->  
+ <update id="update" parameterType="com.yzit.shop.entity.SysLog" >
+  update t_sys_log set types=#{types},title=#{title},create_by=#{createBy},start_date=#{startDate},end_date=#{endDate},remote_addr=#{remoteAddr},request_uri=#{requestUri},method=#{method},params=#{params},exceptions=#{exceptions} where id=#{id}
+ </update>
+ 
+ <!-- 修改记录，只修改只不为空的字段 -->
+<update id="updateBySelective" parameterType="com.yzit.shop.entity.SysLog" >
+	update t_sys_log set 
+	<trim  suffixOverrides="," >
+	<if test="types != null  and types != '' ">
+		types=#{types},
+	</if>
+	<if test="title != null  and title != '' ">
+		title=#{title},
+	</if>
+	<if test="createBy != null  ">
+		create_by=#{createBy},
+	</if>
+	<if test="startDate != null  ">
+		start_date=#{startDate},
+	</if>
+	<if test="endDate != null  ">
+		end_date=#{endDate},
+	</if>
+	<if test="remoteAddr != null  and remoteAddr != '' ">
+		remote_addr=#{remoteAddr},
+	</if>
+	<if test="requestUri != null  and requestUri != '' ">
+		request_uri=#{requestUri},
+	</if>
+	<if test="method != null  and method != '' ">
+		method=#{method},
+	</if>
+	<if test="params != null  ">
+		params=#{params},
+	</if>
+	<if test="exceptions != null  ">
+		exceptions=#{exceptions},
+	</if>
+	</trim> where id=#{id}
+	
+	
+	
+</update>
+
+<!-- 删除记录 -->
+<delete id="delById" parameterType="java.lang.Long">
+	delete from t_sys_log where  id =#{id}
+</delete>
+ 
+<!-- 根据id查询 日志类 -->
+<select id="findById"  resultMap="BaseResultMap" parameterType="java.lang.Long">
+	select <include refid="Base_Column_List"/>
+	from t_sys_log  where  id = #{id}
+</select>
+
+<!-- 检索所有的记录 -->
+<select id="findAll"  resultMap="BaseResultMap" >
+	select 
+	<include refid="Base_Column_List"/>
+	from t_sys_log 
+</select>
+  	
+<!-- 查询日志类列表 -->
+<select id="findByList" resultMap="BaseResultMap"  parameterType="com.yzit.shop.entity.SysLog">
+	select 
+	<include refid="Base_Column_List"/>
+	from t_sys_log 
+	<include refid="Example_Where_Clause"/>
+	<!--  limit  #{startIndex} ,#{pageSize} -->
+</select>
+  	
+</mapper>   

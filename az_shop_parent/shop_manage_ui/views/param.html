@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>商品参数管理</title>
+    <script src="../../static/vue/vue.min.js"></script>
+    <link rel="stylesheet" href="../../static/elementUI/index.css">
+    <script src="../../static/elementUI/index.js"></script>
+    <script src="../../static/vue/axios.min.js"></script>
+    <script src="../static/jquery-3.2.1.min.js"></script>
+</head>
+<body>
+<div id="app">
+    <el-container>
+        <!--左侧布局-->
+        <el-card class="box-card" shadow="hover" style="margin-top: 20px;margin-left: 20px;">
+            <span style="color: #3a8ee6">商品类别</span>
+            <br>
+            <br>
+        <el-aside  style="width: 180px;height: 200px">
+            <!--树数据-->
+            <el-tree :data="categoryTree" :props="defaultProps"
+                     @node-click="handleNodeClick">
+            </el-tree>
+        </el-aside>
+        </el-card>
+
+
+        <!--右侧布局-->
+        <el-main>
+            <el-button type="primary" @click="dialogVisible=true">
+                新增
+            </el-button>
+            <el-table stipe border :data="paramList">
+                <el-table-column prop="name" label="参数名称"></el-table-column>
+                <el-table-column prop="categoryId" label="所属商品类型"></el-table-column>
+                <el-table-column prop="seq" label="排序"></el-table-column>
+                <el-table-column prop="paramItems" label="参数值" :formatter="formatter"></el-table-column>
+                <el-table-column label="操作">
+                    <template slot-scope="scope">
+                        <el-button type="primary"size="small" @click="handleEdit(scope.row)">修改</el-button>
+                        <el-button type="danger" size="small" @click="del(scope.row)">删除</el-button>
+                    </template>
+                </el-table-column>
+                </el-table-column>
+            </el-table>
+
+            <!--dialog编辑窗口-->
+            <el-dialog
+                    title="属性编辑"
+                    :visible.sync="dialogVisible">
+                <el-form label-width="80px">
+
+                    <el-form-item label="参数名">
+                        <el-input  placeholder="请输入参数名" v-model="paramForm.name"></el-input>
+                    </el-form-item>
+
+                    <el-form-item label="排序">
+                        <el-input placeholder="请输入数字" v-model="paramForm.seq"></el-input>
+                    </el-form-item>
+
+                    <el-form-item>
+                        <el-button @click="addItem">新增参数</el-button>
+                    </el-form-item>
+                    <!--标头-->
+                    <el-form-item>
+                        <el-row>
+                            <el-col :span="10">参数值</el-col>
+                            <el-col :span="2">&nbsp;</el-col>
+                            <el-col :span="8">操作</el-col>
+                        </el-row>
+
+                        <!--动态添加一行数据，for循环itemList属性值集合-->
+                        <el-row v-for="(param,index) in paramForm.paramList" style="margin-top: 10px">
+                            <el-col :span="10">
+                                <el-input v-model="paramForm.paramList[index].text"
+                                          placeholder="请输入参数值" style="width: 200px"></el-input>
+                            </el-col>
+                            <el-col :span="2">&nbsp;</el-col>
+                            <el-col :span="8">
+                                <el-button @click="delItem(index)">删除</el-button>
+                            </el-col>
+                        </el-row>
+
+                    </el-form-item>
+
+                    <el-form-item>
+                        <el-button @click="save()">保存</el-button>
+                        <el-button @click="dialogVisible = false">关闭</el-button>
+                    </el-form-item>
+                </el-form>
+
+            </el-dialog>
+
+        </el-main>
+    </el-container>
+
+
+</div>
+
+<script>
+    var baseUrl = "http://localhost:90";
+    //var baseUrl = "http://api.shop.com";
+</script>
+<script src="../static/js/param.js"></script>
+</body>
+</html>

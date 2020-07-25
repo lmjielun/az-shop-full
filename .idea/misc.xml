@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="JavaScriptSettings">
+    <option name="languageLevel" value="ES6" />
+  </component>
+  <component name="MavenProjectsManager">
+    <option name="originalFiles">
+      <list>
+        <option value="$PROJECT_DIR$/az_shop_parent/pom.xml" />
+        <option value="$PROJECT_DIR$/az_shop_parent/shop_portal/pom.xml" />
+        <option value="$PROJECT_DIR$/az_shop_parent/shop_manage_api/pom.xml" />
+        <option value="$PROJECT_DIR$/az_shop_parent/shop_common_api/pom.xml" />
+        <option value="$PROJECT_DIR$/staticPage/pom.xml" />
+        <option value="$PROJECT_DIR$/az_shop_parent/shop_sso_api/pom.xml" />
+        <option value="F:/codeGen2/pom.xml" />
+        <option value="$PROJECT_DIR$/az_shop_parent/shop_cart_api/pom.xml" />
+        <option value="$PROJECT_DIR$/az_shop_parent/shop_pay_api/pom.xml" />
+        <option value="$PROJECT_DIR$/Active_Queue/pom.xml" />
+        <option value="$PROJECT_DIR$/springsoot_active/pom.xml" />
+        <option value="$PROJECT_DIR$/springmvc_log/pom.xml" />
+        <option value="$PROJECT_DIR$/log_auth/pom.xml" />
+        <option value="$PROJECT_DIR$/log_sys/pom.xml" />
+      </list>
+    </option>
+    <option name="ignoredFiles">
+      <set>
+        <option value="$PROJECT_DIR$/az_shop_parent/pom.xml" />
+      </set>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/out" />
+  </component>
+</project>

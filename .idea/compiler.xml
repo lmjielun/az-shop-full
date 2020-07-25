@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="Active_Queue" />
+        <module name="codeGen2" />
+        <module name="log_auth" />
+        <module name="log_sys" />
+        <module name="shop_cart_api" />
+        <module name="shop_common_api" />
+        <module name="shop_framework" />
+        <module name="shop_manage_api" />
+        <module name="shop_order_api" />
+        <module name="shop_pay_api" />
+        <module name="shop_pojo" />
+        <module name="shop_portal" />
+        <module name="shop_sso_api" />
+        <module name="springmvc_log" />
+        <module name="springsoot_active" />
+        <module name="staticPage" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel target="1.8">
+      <module name="Active_Queue" target="1.5" />
+      <module name="az_shop_parent" target="1.8" />
+      <module name="codeGen2" target="1.5" />
+      <module name="log_auth" target="1.8" />
+      <module name="log_sys" target="1.8" />
+      <module name="shop_cart_api" target="1.8" />
+      <module name="shop_common_api" target="1.8" />
+      <module name="shop_framework" target="1.8" />
+      <module name="shop_manage_api" target="1.8" />
+      <module name="shop_order_api" target="1.8" />
+      <module name="shop_pay_api" target="1.8" />
+      <module name="shop_pojo" target="1.8" />
+      <module name="shop_portal" target="1.8" />
+      <module name="shop_sso_api" target="1.8" />
+      <module name="springboot_activemq_consumers" target="1.8" />
+      <module name="springmvc_log" target="1.8" />
+      <module name="springsoot_active" target="1.8" />
+      <module name="staticPage" target="1.8" />
+      <module name="test" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>商品管理</title>
+   <script src="../../static/vue/vue.min.js"></script>
+    <script src="../static/vue/axios.min.js"></script>
+    <script src="../../static/vue/qs.js"></script>
+    <link rel="stylesheet" href="../../static/elementUI/index.css">
+    <script src="../../static/elementUI/index.js"></script>
+    <script src="../static/jquery-3.2.1.min.js"></script>
+    <script src="../static/util.js"></script>
+
+
+</head>
+<body>
+    <div id="app">
+
+        <el-form>
+
+            <br>
+            <el-form-item style="line-height: 35px">
+            <el-row v-for="spec in outSpecList">
+                    <el-col :span="1">&nbsp;</el-col>
+                    <el-col :span="2" >{{spec.name}}</el-col>
+                    <el-col :span="2" v-for="item in spec.specList">
+                        <el-checkbox @change="changeSpecCheckbox(spec.name,item.text)">{{item.text}}</el-checkbox>
+                    </el-col>
+            </el-row>
+            </el-form-item>
+
+            <br>
+            <el-form-item style="line-height: 35px" border>
+            <el-row >
+                <el-col :span="1">&nbsp;</el-col>
+                <el-col :span="4">
+                    <el-button @click="addSku">添加规格</el-button>
+                </el-col>
+            </el-row>
+            </el-form-item>
+
+            <hr style="height: 1px;border: none;border-top: 1px solid grey">
+
+            <br>
+                <el-row>
+                    <el-col :span="1" >&nbsp;</el-col>
+                    <el-col :span="3" v-for="item in goodsForm.specList">{{item.text}}</el-col>
+                    <el-col :span="3">价格</el-col>
+                    <el-col :span="3">库存</el-col>
+                    <el-col :span="3">操作</el-col>
+                </el-row>
+            <p/>
+
+            <!--goodsForm.specList = {{goodsForm.specList}}-->
+            <el-form-item>
+
+                <el-row>
+                    <el-col :span="1" >&nbsp;</el-col>
+                    <el-col :span="3" v-for="spec in goodsForm.specList" style="align-content: left">
+                        <el-select v-model="spec" size="mini" style="width:95px">
+                            <el-option v-for="item in spec.items" :label="item.text" :value="item.text"></el-option>
+                        </el-select>
+                    </el-col>
+
+                    <el-col :span="3">
+                        <el-input type="text" size="mini" style="width: 95px" placeholder="输入价格"></el-input>
+                    </el-col>
+
+                    <el-col :span="3">
+                        <el-input type="text" size="mini" style="width: 95px" placeholder="输入库存"></el-input>
+                    </el-col>
+
+                    <el-col :span="3">
+                        <el-button size="mini" style="width: 50px">删除</el-button>
+                    </el-col>
+                </el-row>
+            </el-form-item>
+
+
+        </el-form>
+
+
+    </div>
+
+    <script>
+        //var baseUrl = "http://localhost:90";
+        var baseUrl = "http://api.shop.com";
+
+        var app = new Vue({
+            el:"#app",
+            data:{
+                // goodsForm外的规格
+                outSpecList:[],
+                // 商品提交表单
+                goodsForm:{
+                    // 提交表单里的【规格集合】
+                    specList:[],
+                    skuList:[],
+                }
+            },
+            created:function () {
+                // 加载商品规格
+                this.loadSpecList();
+            },
+            methods:{
+
+                addSku:function () {
+                },
+
+                // checkbox 改变事件
+                changeSpecCheckbox:function (specName,text) {
+                    // 1 根据规格名称，查询specItemsList变量，是否存在，如果规格存在，在规格选项集合添加规格选项，如果不存在，那就添加规格以及规格选项
+                    // specItemsList:[],//选中的规格以及规格值， 格式 ：[ {text:规格名称，items:[ {text：规格值} ,{text：规格值2} ]  } ]
+                    let specObj  = selectObjByList( app.goodsForm.specList,"text",specName);
+                    if(specObj == null){
+                        app.goodsForm.specList.push(  {text:specName,items:[{text}]  } );
+                    }else{
+                        //根据规格选项查询，如果不存在就添加，如果存在就删除
+                        let  specItemIndex = selectIndexByList(specObj.items,"text",text);
+                        if(specItemIndex == null){ //表示规格选项不存在，那么就添加
+                            specObj.items.push({text:text})
+                        }else{//表示规格选项存在，就删除
+                            specObj.items.splice( specItemIndex,1);
+                        }
+                    }
+
+                },
+
+                // 加载商品规格
+                loadSpecList:function () {
+                    axios.get(baseUrl + "/api/spec/list2").then(function (value) {
+                        for(let i = 0 ; i < value.data.length; i++){
+                            app.outSpecList.push(value.data[i])
+                        }
+                    })
+                },
+            }
+
+        })
+
+    </script>
+</body>
+</html>

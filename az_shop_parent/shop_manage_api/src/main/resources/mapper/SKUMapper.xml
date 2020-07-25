@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yzit.shop.dao.SKUDao" > 
+<!-- Result Map-->
+<resultMap id="BaseResultMap" type="com.yzit.shop.entity.SKU" >
+    	<result column="id" property="id"/>
+    	<result column="goods_id" property="goodsId"/>
+    	<result column="name" property="name"/>
+    	<result column="sell_point" property="sellPoint"/>
+    	<result column="price" property="price"/>
+    	<result column="num" property="num"/>
+    	<result column="alert_num" property="alertNum"/>
+    	<result column="barcode" property="barcode"/>
+    	<result column="specs" property="specs"/>
+    	<result column="image" property="image"/>
+</resultMap>
+<!-- $!{tableName} table all fields -->
+<sql id="Base_Column_List" >
+	 id,goods_id,name,sell_point,price,num,alert_num,barcode,specs,image
+</sql>
+
+
+<!-- 批量插入sku集合-->
+<insert id="insertBatch">
+	insert into tb_sku(goods_id,name,sell_point,price,num,alert_num,barcode,specs,image)
+	VALUES
+	<foreach collection ="list" item="sku" separator =",">
+		(#{sku.goodsId},#{sku.name},#{sku.sellPoint},#{sku.price},#{sku.num},#{sku.alertNum},#{sku.barcode},#{sku.specs},#{sku.image})
+	</foreach >
+</insert>
+<!-- 查询条件 -->
+<sql id="Example_Where_Clause">
+where 1=1
+<trim  suffixOverrides="," >
+	<if test="id != null" >
+	    and id = #{id}
+	</if>
+	<if test="goodsId != null" >
+	    and goods_id = #{goodsId}
+	</if>
+	<if test="name != null and name != ''" >
+	    and name = #{name}
+	</if>
+	<if test="sellPoint != null and sellPoint != ''" >
+	    and sell_point = #{sellPoint}
+	</if>
+	<if test="price != null" >
+	    and price = #{price}
+	</if>
+	<if test="num != null" >
+	    and num = #{num}
+	</if>
+	<if test="alertNum != null" >
+	    and alert_num = #{alertNum}
+	</if>
+	<if test="barcode != null and barcode != ''" >
+	    and barcode = #{barcode}
+	</if>
+	<if test="specs != null and specs != ''" >
+	    and specs = #{specs}
+	</if>
+	<if test="image != null and image != ''" >
+	    and image = #{image}
+	</if>
+</trim>
+</sql>
+   
+
+<!-- 插入记录 -->
+<insert id="save" parameterType="com.yzit.shop.entity.SKU" >
+  insert into tb_sku(id,goods_id,name,sell_point,price,num,alert_num,barcode,specs,image)
+ values(#{id},#{goodsId},#{name},#{sellPoint},#{price},#{num},#{alertNum},#{barcode},#{specs},#{image})
+</insert>
+
+<!-- 根据id，修改记录-->  
+ <update id="update" parameterType="com.yzit.shop.entity.SKU" >
+  update tb_sku set goods_id=#{goodsId},name=#{name},sell_point=#{sellPoint},price=#{price},num=#{num},alert_num=#{alertNum},barcode=#{barcode},specs=#{specs},image=#{image} where id=#{id}
+ </update>
+ 
+ <!-- 修改记录，只修改只不为空的字段 -->
+<update id="updateBySelective" parameterType="com.yzit.shop.entity.SKU" >
+	update tb_sku set 
+	<trim  suffixOverrides="," >
+	<if test="goodsId != null  ">
+		goods_id=#{goodsId},
+	</if>
+	<if test="name != null  and name != '' ">
+		name=#{name},
+	</if>
+	<if test="sellPoint != null  and sellPoint != '' ">
+		sell_point=#{sellPoint},
+	</if>
+	<if test="price != null  ">
+		price=#{price},
+	</if>
+	<if test="num != null  ">
+		num=#{num},
+	</if>
+	<if test="alertNum != null  ">
+		alert_num=#{alertNum},
+	</if>
+	<if test="barcode != null  and barcode != '' ">
+		barcode=#{barcode},
+	</if>
+	<if test="specs != null  and specs != '' ">
+		specs=#{specs},
+	</if>
+	<if test="image != null  and image != '' ">
+		image=#{image},
+	</if>
+	</trim> where id=#{id}
+	
+	
+	
+</update>
+
+<!-- 删除记录 -->
+<delete id="delById" parameterType="java.lang.Long">
+	delete from tb_sku where  id =#{id}
+</delete>
+ 
+<!-- 根据id查询 SKU -->
+<select id="findById"  resultMap="BaseResultMap" parameterType="java.lang.Long">
+	select <include refid="Base_Column_List"/>
+	from tb_sku  where  id = #{id}
+</select>
+
+<!-- 检索所有的记录 -->
+<select id="findAll"  resultMap="BaseResultMap" >
+	select 
+	<include refid="Base_Column_List"/>
+	from tb_sku 
+</select>
+  	
+<!-- 查询SKU列表 -->
+<select id="findByList" resultMap="BaseResultMap"  parameterType="com.yzit.shop.entity.SKU">
+	select 
+	<include refid="Base_Column_List"/>
+	from tb_sku 
+	<include refid="Example_Where_Clause"/>
+	<!--  limit  #{startIndex} ,#{pageSize} -->
+</select>
+  	
+</mapper>   

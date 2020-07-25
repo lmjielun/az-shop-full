@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Active_Queue/Active_Queue.iml" filepath="$PROJECT_DIR$/Active_Queue/Active_Queue.iml" />
+      <module fileurl="file://$PROJECT_DIR$/az_shop_parent/az_shop_parent.iml" filepath="$PROJECT_DIR$/az_shop_parent/az_shop_parent.iml" />
+      <module fileurl="file://F:/codeGen2/codeGen2.iml" filepath="F:/codeGen2/codeGen2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/az_shop_parent/fremawork.iml" filepath="$PROJECT_DIR$/az_shop_parent/fremawork.iml" />
+      <module fileurl="file://$PROJECT_DIR$/log_auth/log_auth.iml" filepath="$PROJECT_DIR$/log_auth/log_auth.iml" />
+      <module fileurl="file://$PROJECT_DIR$/log_sys/log_sys.iml" filepath="$PROJECT_DIR$/log_sys/log_sys.iml" />
+      <module fileurl="file://$PROJECT_DIR$/az_shop_parent/shop_cart_api/shop_cart_api.iml" filepath="$PROJECT_DIR$/az_shop_parent/shop_cart_api/shop_cart_api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/az_shop_parent/shop_cart_ui/shop_cart_ui.iml" filepath="$PROJECT_DIR$/az_shop_parent/shop_cart_ui/shop_cart_ui.iml" />
+      <module fileurl="file://$PROJECT_DIR$/az_shop_parent/shop_common_api/shop_common_api.iml" filepath="$PROJECT_DIR$/az_shop_parent/shop_common_api/shop_common_api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/az_shop_parent/shop_framework/shop_framework.iml" filepath="$PROJECT_DIR$/az_shop_parent/shop_framework/shop_framework.iml" />
+      <module fileurl="file://$PROJECT_DIR$/az_shop_parent/shop_manage_api/shop_manage_api.iml" filepath="$PROJECT_DIR$/az_shop_parent/shop_manage_api/shop_manage_api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/az_shop_parent/shop_manage_ui/shop_manage_ui.iml" filepath="$PROJECT_DIR$/az_shop_parent/shop_manage_ui/shop_manage_ui.iml" />
+      <module fileurl="file://$PROJECT_DIR$/az_shop_parent/shop_order_api/shop_order_api.iml" filepath="$PROJECT_DIR$/az_shop_parent/shop_order_api/shop_order_api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/az_shop_parent/shop_order_ui/shop_order_ui.iml" filepath="$PROJECT_DIR$/az_shop_parent/shop_order_ui/shop_order_ui.iml" />
+      <module fileurl="file://$PROJECT_DIR$/az_shop_parent/shop_pay_api/shop_pay_api.iml" filepath="$PROJECT_DIR$/az_shop_parent/shop_pay_api/shop_pay_api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/az_shop_parent/shop_pojo/shop_pojo.iml" filepath="$PROJECT_DIR$/az_shop_parent/shop_pojo/shop_pojo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/az_shop_parent/shop_portal/shop_portal.iml" filepath="$PROJECT_DIR$/az_shop_parent/shop_portal/shop_portal.iml" />
+      <module fileurl="file://$PROJECT_DIR$/az_shop_parent/shop_sso_api/shop_sso_api.iml" filepath="$PROJECT_DIR$/az_shop_parent/shop_sso_api/shop_sso_api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/az_shop_parent/shop_sso_ui/shop_sso_ui.iml" filepath="$PROJECT_DIR$/az_shop_parent/shop_sso_ui/shop_sso_ui.iml" />
+      <module fileurl="file://$PROJECT_DIR$/springmvc_log/springmvc_log.iml" filepath="$PROJECT_DIR$/springmvc_log/springmvc_log.iml" />
+      <module fileurl="file://$PROJECT_DIR$/springsoot_active/springsoot_active.iml" filepath="$PROJECT_DIR$/springsoot_active/springsoot_active.iml" />
+      <module fileurl="file://$PROJECT_DIR$/staticPage/staticPage.iml" filepath="$PROJECT_DIR$/staticPage/staticPage.iml" />
+    </modules>
+  </component>
+</project>

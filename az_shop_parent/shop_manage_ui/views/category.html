@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>商品分类管理</title>
+    <script src="../../static/vue/vue.min.js"></script>
+    <link rel="stylesheet" href="../../static/elementUI/index.css">
+    <script src="../../static/elementUI/index.js"></script>
+    <script src="../../static/vue/axios.min.js"></script>
+
+</head>
+<body>
+    <div id="app">
+        <!--添加步骤1：新增按钮-->
+        <el-card class="box-card">
+            <el-button type="primary"
+                       @click="dialogVisible = true"
+                       icon="el-icon-edit">新增</el-button>
+        </el-card>
+        <el-card class="box-card">
+            <!--添加面包屑-->
+                <el-breadcrumb  separator="/">
+                    <el-breadcrumb-item><a href="javascript:void(0);"
+                                           @click="parentId=0;loadCategoryList();breadcrumbList=[]"
+                                            style="color: #66b1ff">顶级分类列表</a>
+                    </el-breadcrumb-item>
+                    <el-breadcrumb-item  v-for="(breadcrumb,index) in breadcrumbList" >
+                        <a href="javascript:void(0);" @click="changeBreadcrumb(breadcrumb.id,index)">{{breadcrumb.name}}</a>
+                    </el-breadcrumb-item>
+                </el-breadcrumb>
+            <hr>
+            <!--table表格 列表展示-->
+            <el-table :data="categoryList">
+                <el-table-column prop="name"   label="品牌名称"></el-table-column>
+                <el-table-column prop="seq"    label="排序"></el-table-column>
+                <el-table-column prop="isShow" :formatter="formatter" label="是否显示"></el-table-column>
+                <el-table-column prop="isMenu" :formatter="formatter" label="是否导航"></el-table-column>
+                <el-table-column label="操作">
+                    <template slot-scope="scope">
+                        <el-button type="" size ="small" style="width: 125px" @click="queryChildren( scope.row)">查询下级</el-button>
+                        <br>
+                        <br>
+                        <el-button type="info"   size ="small" @click="handleEdit(scope.row)">修改</el-button>
+                        <el-button type="danger" size ="small" @click="del(scope.row)">删除</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </el-card>
+
+
+        <!-- 添加步骤2  dialog编辑框  -->
+        <el-dialog title="提示" :before-close="handleClose" :visible.sync="dialogVisible" width="40%">
+
+            <el-form label-width="120px">
+                <!--动态的展示上级分类-->
+                <el-form-item label="上级分类">
+                    <el-breadcrumb separator=">">
+                        <el-breadcrumb-item>顶级分类列表</el-breadcrumb-item>
+                        <!--循环面包屑集合-->
+                        <el-breadcrumb-item  v-for="(breadcrumb,index) in breadcrumbList" > {{breadcrumb.name}}</el-breadcrumb-item>
+                    </el-breadcrumb>
+                </el-form-item>
+
+                <el-form-item label="商品分类名称">
+                    <el-input  placeholder="商品分类名称" v-model="categoryForm.name"></el-input>
+                </el-form-item>
+
+                <el-form-item label="是否显示">
+                    <el-input placeholder="是否显示" v-model=" categoryForm.isShow "></el-input>
+                </el-form-item>
+                <el-form-item label="是否导航">
+                    <el-input placeholder="是否导航" v-model="categoryForm.isMenu"></el-input>
+                </el-form-item>
+
+                <el-form-item label="排序">
+                    <el-input placeholder="排序" v-model="categoryForm.seq"></el-input>
+                </el-form-item>
+
+            </el-form>
+
+
+            <!--添加步骤3 按钮-->
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="dialogVisible = false">取 消</el-button>
+                <el-button type="primary"  @click="save()">确 定</el-button>
+            </span>
+
+        </el-dialog>
+
+
+    </div>
+
+    <script>
+        var baseUrl = "http://localhost:90";
+       // var baseUrl = "http://api.shop.com";
+    </script>
+    <script src="../static/js/category.js"></script>
+</body>
+</html>

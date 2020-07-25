@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE">
+	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+	<title>个人注册</title>
+	<link rel="stylesheet" type="text/css" href="static/css/pages-register.css">
+	<link rel="stylesheet" type="text/css" href="static/css/webbase.css">
+	<script src="static/vue/vue.min.js"></script>
+	<script src="static/vue/axios.min.js"></script>
+	<script src="static/jquery-3.2.1.min.js"></script>
+	<script src="static/jquery.cookie.js"></script>
+	<link rel="stylesheet" href="static/elementUI/index.css">
+	<script src="static/elementUI/index.js"></script>
+	<style>
+		.registerForm {
+			width: 350px;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="register py-container " id="app" >
+		<!--head-->
+		<div class="logoArea">
+			<a href="" class="logo"></a>
+		</div>
+
+
+		<!--register-->
+		<div class="registerArea" align="center" >
+			<h3>注册新用户<span class="go">我有账号，去<a href="login.html" target="_blank">登陆</a></span></h3>
+			<el-form ref="registerForm"  v-model="userInfo" class="registerForm">
+				<el-form-item prop="username" label="用户名：">
+					<el-input v-model="userInfo.username" placeholder="请输入用户名"></el-input>
+				</el-form-item>
+
+				<el-form-item prop="password" label="登录密码：" >
+					<el-input v-model="userInfo.password" placeholder="请输入登录密码"></el-input>
+				</el-form-item>
+
+				<el-form-item prop="email" label="邮箱：" >
+					<el-input v-model="userInfo.email" placeholder="请输入邮箱"></el-input>
+				</el-form-item>
+
+				<el-form-item prop="phone" label="电话：" >
+					<el-input v-model="userInfo.phone" placeholder="请输入电话号码"></el-input>
+				</el-form-item>
+
+
+				<div class="control-group">
+					<label  class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+					<div class="controls">
+						<input name="m1" type="checkbox" value="2" checked=""><span>同意协议并注册《**电商用户协议》</span>
+					</div>
+				</div>
+				<br>
+				<div class="control-group">
+					<label class="control-label"></label>
+					<div class="controls btn-reg">
+						<a class="sui-btn btn-block btn-xlarge btn-danger" @click="register('registerForm')">完成注册</a>
+					</div>
+				</div>
+			</el-form>
+
+			<!--foot-->
+			<div class="py-container copyright">
+			<ul>
+				<li>关于我们</li>
+				<li>联系我们</li>
+				<li>联系客服</li>
+				<li>商家入驻</li>
+				<li>营销中心</li>
+				<li>手机**电商</li>
+				<li>销售联盟</li>
+				<li>**电商社区</li>
+			</ul>
+			<div class="address">地址：北京市昌平区建材城西路金燕龙办公楼一层 邮编：100096 电话：400-618-4000 传真：010-82935100</div>
+			<div class="beian">京ICP备08001421号京公网安备110108007702
+			</div>
+		</div>
+		</div>
+	</div>
+
+<script>
+	var app = new Vue({
+		el:"#app",
+		data:{
+		    userInfo:{
+			},
+          /*  rules:{
+                username:[
+                    {required: true, message: '请输入用户名', trigger: 'blur'},
+                    {min: 6, max: 16, message: '长度在 3 到 16 个字符', trigger: 'blur'}
+                ],
+                password:[
+                    {required: true, message: '请输入密码', trigger: 'blur'},
+                    {min: 6, max: 16, message: '长度在 3 到 16 个字符', trigger: 'blur'}
+                ],
+                email:[
+                    {required: true, message: '请输入邮箱', trigger: 'blur'},
+                ],
+                phone:[
+                    {required: true, message: '请输入电话', trigger: 'blur'},
+                    {min: 6, max: 16, message: '长度11字符', trigger: 'blur'}
+                ],
+            }*/
+		},
+		methods:{
+			// 发送注册请求
+            register:function (registerForm) {
+                        axios.post("http://api.sso.shop.com/api/user/register",app.userInfo).then(function (value) {
+                            if(value.data.success){
+                                $.cookie('USER_TOKEN',value.data.token,{
+                                    expires:1,
+                                    path:'/',
+                                    domain:'shop.com'
+                                })
+                                location.href = "http://www.shop.com"
+                            }else{
+                                alert(value.data.message)
+                            }
+                        })
+            }
+		}
+	})
+
+</script>
+
+</body>
+
+</html>

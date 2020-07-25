@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>商品管理</title>
+   <script src="../../static/vue/vue.min.js"></script>
+    <script src="../static/vue/axios.min.js"></script>
+    <script src="../../static/vue/qs.js"></script>
+    <link rel="stylesheet" href="../../static/elementUI/index.css">
+    <script src="../../static/elementUI/index.js"></script>
+    <script src="../static/jquery-3.2.1.min.js"></script>
+    <script src="../static/util.js"></script>
+
+    <style>
+        .style{
+            border-bottom: black solid 1px;
+            box-shadow: #66b1ff;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+
+        <el-tabs v-model="activeName" >
+            <el-tab-pane label="基本信息" name="first">
+                <!--基础信息开始-->
+                <el-form label-position="right"
+                         ref="goodsForm"
+                         label-width="80px" size="small" :model="goodsForm">
+                    <el-form-item label="SPU名称">
+                        <el-input v-model="goodsForm.goodsName"></el-input>
+                    </el-form-item>
+                    <el-form-item label="货号">
+                        <el-input v-model="goodsForm.sn"></el-input>
+                    </el-form-item>
+
+                    <el-form-item label="品牌">
+                        <el-select v-model="goodsForm.brandId" placeholder="请选择">
+                            <el-option v-for="item in brandList" :key="item.id"
+                                    :label="item.name" :value="item.id">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+
+                    <el-form-item label="商品分类">
+                        <el-cascader
+                                v-model="categoryId"
+                                :options="categoryTree"
+                                :props="{ expandTrigger: 'hover' }"
+                                @change="handleChange"></el-cascader>
+                    </el-form-item>
+
+                    <el-form-item label="副标题">
+                        <el-input v-model="goodsForm.caption"></el-input>
+                    </el-form-item>
+
+                    <el-form-item label="商城价">
+                        <el-input v-model="goodsForm.price"></el-input>
+                    </el-form-item>
+
+                </el-form>
+                <!--基础信息结束-->
+            </el-tab-pane>
+
+            <el-tab-pane label="商品介绍" name="second">商品介绍</el-tab-pane>
+
+            <el-tab-pane label="商品图片" name="third">
+                <!--上传文件组件
+                  action:上传地址 用阿里云 和 本地都可以
+                  :on-success 文件上传成功后返回给你的数据
+                  :on-preview 预览文件时使用
+                  :on-remove 删除图片
+                  -->
+                goodsForm.imageList = {{goodsForm.imageList}}
+
+                <el-upload
+                        action="http://api.shop.com/api/common/upload/nginx"
+                        list-type="picture-card"
+                        :on-success="handleAvatarSuccess"
+                        :on-preview="handlePictureCardPreview"
+                        :on-remove="handleRemove">
+                    <i class="el-icon-plus"></i>
+                </el-upload>
+                <el-dialog :visible.sync="dialogVisible">
+                    <img width="100%" :src="dialogImageUrl" alt="">
+                </el-dialog>
+
+            </el-tab-pane>
+
+            <el-tab-pane label="商品参数" name="fourth">
+                <!--循环【参数】集合 gooodsForm里的paraItemsList集合，实体类中已定义-->
+                <el-row v-for="(param,index) in goodsForm.paraItemsList">
+                    <el-col :span="1">&nbsp;</el-col>
+                    <!--显示的是text，因为valueNodes实体类中定义显示的就是text-->
+                    <el-col :span="2">{{param.text}}</el-col>
+                    <!--循环【参数值】集合 他是在paraItemsList集合里的-->
+                    <el-col :span="17">
+                        <el-row v-for="(item , index2) in param.items">
+                            <!--显示的是text，因为valueNodes实体类中定义显示的就是text-->
+                            <el-col :span="2">{{item.text}}:</el-col>
+                            <el-col :span="12">
+                                <!--双向绑定，paraItemsList集合中的第index，第index中的第index2个值-->
+                                <el-input v-model="goodsForm.paraItemsList[index].items[index2].value"></el-input>
+                            </el-col>
+                        </el-row>
+                    </el-col>
+                </el-row>
+            </el-tab-pane>
+
+            <el-tab-pane label="商品属性" name="five">
+                app.attrList = {{attrList}}<br>
+                goodsForm.attrItemsList = {{goodsForm.attrItemsList}}
+                <!--循环的是goodsFrom外的 attrList 数组-->
+                <el-row v-for="(attr,index) in attrList">
+                    <el-col :span="1">&nbsp;</el-col>
+                    <el-col :span="2">{{attr.text}}</el-col>
+                    <el-col :span="17">
+                        <!--循环的是goodsFrom内的 attrItemsList 数组-->
+                        <!--<el-select v-model="goodsForm.attrItemsList[index].value">-->
+                         <el-select v-model="goodsForm.attrItemsList[index].value">
+                            <el-option v-for="item in attr.items"
+                                        :key="item.text"
+                                        :label="item.text"
+                                        :value="item.text"></el-option>
+                        </el-select>
+
+                    </el-col>
+                </el-row>
+            </el-tab-pane>
+
+            <el-tab-pane label="商品规格" name="six">
+                <!--{{specList}}<br>-->
+                <el-form>
+                <el-form-item class="style">
+                    <!--第一次循环 后台传递过来的app.specList数组-->
+                    <el-row v-for="(spec,index) in specList">
+                        <el-col :span="1">&nbsp;</el-col>
+                        <!--获取到specList列表里的text字段-->
+                        <el-col :span="2">{{spec.text}}</el-col>
+                        <!--循环app.specList数组里的items数组-->
+                        <le-col :span="2" v-for="(specItem,index2) in spec.items">
+                            <!--创建复选框，值是items值里的text-->
+                            <el-checkbox
+                                    @change="changeSpecCheckbox(spec.text,specItem.text)">
+                                {{specItem.text}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            </el-checkbox>
+                        </le-col>
+                    </el-row>
+                </el-form-item>
+
+                <el-form-item >
+                    <!--再添加一行,放 【添加规格】按钮-->
+                    <el-row >
+                        <el-col :span="1">&nbsp;</el-col>
+                        <el-col>
+                            <el-button type="primary"  @click="addSKU">添加规格</el-button>
+                        </el-col>
+                    </el-row>
+                </el-form-item>
+
+                <el-form-item class="style">
+                    goodsForm.specItemsList == {{goodsForm.specItemsList}}
+                    <!--动态添加【规格名称】-->
+                    <el-row>
+                        <el-col :span="1">&nbsp;</el-col>
+                        <el-col :span="3" v-for="spec in  goodsForm.specItemsList">{{spec.text}}</el-col>
+                        <el-col :span="3">库存</el-col>
+                        <el-col :span="3">价格</el-col>
+                        <el-col :span="3">操作</el-col>
+                    </el-row>
+                </el-form-item>
+
+                skulist == {{goodsForm.skuList}}
+                <el-form-item>
+                    <!--动态添加一行规格，从skuList里获取,在点击添加的时候，将goodsForm.specItemsList赋值给skuList-->
+                    <el-row v-for="(sku,index) in goodsForm.skuList" :key="index">
+                        <el-col :span="1">&nbsp;</el-col>
+                        <!--添加一列【规格名】，从skuList的specList里获取到【规格名】-->
+                        <el-col :span="3" v-for="(item,index2) in sku.specList">
+                            <!--绑定【规格值】，绑定第index行的，第index2列的值-->
+                            <el-select v-model="goodsForm.skuList[index].specList[index2].value"
+                                       size="mini" style="width: 125px">
+                                    <!-- 添加一列下拉框，下拉框的数据，来自于用户选中的【规格值】，那么怎么获取到用户选中的值呢
+                                        使用selectObjByList，意思是：从一个集合中，查询一个对象出来，
+                                        参数1：goodsForm.specItemsList  就是要循环的集合，
+                                        参数2：'text'  就是goodsForm.specItemsList里的所拥有的属性，
+                                        参数3：item.text  就是传递过来的值，当传递过来的 item.text==‘text’ 就返回一个对象 -->
+                                    <el-option
+                                              v-for="item_1 in selectObjByList(goodsForm.specItemsList,'text',item.text).items"
+                                              :label="item_1.text"
+                                              :value="item_1.text"  >
+                                    </el-option>
+
+                            </el-select>
+                        </el-col>
+
+                        <!--v-model 绑定的是 goodsForm.skuList集合的第index行记录-->
+                        <el-col :span="3">
+                            <el-input size="mini" style="width: 125px"
+                                      v-model="goodsForm.skuList[index].price"
+                                      placeholder="请输入价格"></el-input>
+                        </el-col>
+
+                        <!--v-model 绑定的是 goodsForm.skuList集合的第index行记录-->
+                        <el-col :span="3">
+                            <el-input size="mini" style="width: 125px"
+                                      v-model="goodsForm.skuList[index].num"
+                                      placeholder="请输入库存"></el-input>
+                        </el-col>
+
+                        <el-col :span="3">
+                            <el-button size="mini">删除</el-button>
+                        </el-col>
+                    </el-row>
+                </el-form-item>
+                </el-form>
+
+            </el-tab-pane>
+
+        </el-tabs>
+
+
+        <el-row>
+            <el-button type="primary" plain @click="saveGoods()">保存</el-button>
+            <el-button type="info" plain>返回列表</el-button>
+        </el-row>
+
+    </div>
+
+    <script>
+        var baseUrl = "http://localhost:90";
+        //var baseUrl = "http://api.shop.com";
+    </script>
+    <script src="../static/js/goods.js"></script>
+</body>
+</html>

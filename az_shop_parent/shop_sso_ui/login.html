@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="static/elementUI/index.css">
+  <link rel="stylesheet" href="static/css/index.css">
+  <title>登录</title>
+  <style>
+    .login-container {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+      position: relative;
+      width: 100%;
+      height: 100%;
+      margin: 0 auto;
+      background: url(imgs/bg/cloud.jpg) 0 bottom repeat-x #049ec4;
+      -webkit-animation: animate-cloud 20s linear infinite;
+      animation: animate-cloud 20s linear infinite;
+    }
+
+    @-webkit-keyframes animate-cloud {
+      from{background-position:100% 100%}
+      to{background-position:0% 100%}
+    }
+
+    .login-weaper {
+      margin: 0 auto;
+      width: 1000px;
+      -webkit-box-shadow: -4px 5px 10px rgba(0,0,0,.4);
+      box-shadow: -4px 5px 10px rgba(0,0,0,.4);
+      height: 500px;
+    }
+
+    .login-left {
+      border-top-left-radius: 5px;
+      border-bottom-left-radius: 5px;
+      -webkit-box-pack: center;
+      -ms-flex-pack: center;
+      justify-content: center;
+      -webkit-box-orient: vertical;
+      -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+      flex-direction: column;
+      background-color: #6871D6;
+      color: #fff;
+      float: left;
+      width: 50%;
+      position: relative;
+      height: 100%;
+    }
+
+    .login-left .login-time {
+      position: absolute;
+      left: 25px;
+      top: 25px;
+      width: 100%;
+      color: #fff;
+      font-weight: 200;
+      opacity: .9;
+      font-size: 18px;
+      overflow: hidden;
+    }
+
+    .login-left .logo-img {
+      width: 140px;
+      position: absolute;
+      left: 35%;
+      bottom: 45%;
+      width: 100%;
+    }
+
+    .login-left .title {
+      position: absolute;
+      left: 10px;
+      bottom: 25%;
+      width: 100%;
+      text-align: center;
+      color: #fff;
+      font-weight: 500;
+      letter-spacing: 2px;
+      font-size: 25px;
+    }
+
+    .login-border {
+      border-left: none;
+      border-top-right-radius: 5px;
+      border-bottom-right-radius: 5px;
+      color: #fff;
+      background-color: #fff;
+      width: 50%;
+      float: left;
+      height: 100%;
+    }
+
+    .login-main {
+      margin: 0 auto;
+      width: 65%;
+      height: 80%;
+      box-sizing: border-box;
+      margin-top: 56px;
+    }
+
+    .login-title {
+      color: #333;
+      margin-bottom: 40px;
+      font-weight: 500;
+      font-size: 22px;
+      text-align: center;
+      letter-spacing: 4px;
+    }
+
+    .login-menu {
+      margin-top: 40px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .login-form {
+      margin: 10px 0;
+    }
+
+    .login-menu a {
+      color: #999;
+      font-size: 12px;
+      margin: 0 8px;
+      text-decoration: none;
+    }
+
+    .login-submit {
+      width: 100%;
+      height: 45px;
+      border: 1px solid #6871D6;
+      background: none;
+      font-size: 18px;
+      letter-spacing: 2px;
+      font-weight: 300;
+      color: #6871D6;
+      cursor: pointer;
+      margin-top: 30px;
+      font-family: neo;
+      -webkit-transition: .25s;
+      transition: .25s;
+    }
+  </style>
+</head>
+<body>
+<div class="login-container" id="app">
+  <div class="login-weaper">
+    <div class="login-left">
+      <div class="login-time">
+        2019-08-26 14:56:35
+      </div>
+      <img src="static/imgs/logo.png" alt=""
+           style="width: 140px"
+           class="logo-img">
+      <p class="title">Æ-Shop 商城</p>
+    </div>
+    <div class="login-border">
+      <div class="login-main">
+        <h4 class="login-title">登录</h4>
+
+        <el-form ref="loginForm" :rules="rules" :model="loginForm" class="login-form">
+
+          <el-form-item prop="username">
+            <el-input placeholder="请输入用户名" v-model="loginForm.username">
+              <i slot="prefix" class="el-input__icon el-icon-user"></i>
+            </el-input>
+          </el-form-item>
+
+          <el-form-item prop="password">
+            <el-input placeholder="请输入密码" v-model="loginForm.password" show-password>
+              <i slot="prefix" class="el-input__icon el-icon-lock"></i>-
+            </el-input>
+          </el-form-item>
+
+          <el-form-item>
+            <el-button class="login-submit" size="mini" @click="doLogin">登录</el-button>
+          </el-form-item>
+        </el-form>
+
+
+
+        <div class="login-menu">
+          <a href="login.html">账号密码</a>
+          <a href="secondLogin.html">手机号登录</a>
+          <a href="thirdLogin.html">第三方登录</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
+<script src="static/vue/vue.min.js"></script>
+<script src="static/vue/axios.min.js"></script>
+<script src="static/vue/qs.js"></script>
+<script src="static/elementUI/index.js"></script>
+<script src="static/vue/qs.js"></script>
+<script src="static/jquery-3.2.1.min.js"></script>
+<script src="static/jquery.cookie.js"></script>
+<script>
+
+  var app = new Vue({
+    name:'Login',
+    el:"#app",
+    data: {
+        loginForm : {
+        },
+        rules:{
+          username:[
+            {required: true, message: '请输入用户名', trigger: 'blur'},
+            {min: 3, max: 16, message: '长度在 3 到 16 个字符', trigger: 'blur'}
+          ],
+          password:[
+            {required: true, message: '请输入密码', trigger: 'blur'},
+            {min: 3, max: 16, message: '长度在 3 到 16 个字符', trigger: 'blur'}
+          ]
+        },
+        user:{},
+    },
+    methods: {
+        doLogin:function() {
+            // 发送请求登录
+          axios.post("http://api.sso.shop.com/api/user/login/",app.loginForm).then(function (res) {
+              // 如果登录成功
+              if(res.data.success){
+                  // 设置cookie, USER_TOKEN:cookie名称，随意起
+                  //res.data.token：后台由uuid生成的token值，作为key存储在redis中
+                  $.cookie('USER_TOKEN',res.data.token,{
+                      expires:1, //存储时间：天为单位
+                      path:'/',  //设置cookie的路径，设置为"/",可以让其他页面读取另一个页面的cookie
+                      domain:'shop.com' //设置域名，配合path，该域名下的所有页面都可以获取到cookie
+                  });
+
+                  // 合并购物车，从cookie中获取购物车集合
+                  let myCartStr = $.cookie('USER_MYCART')
+                  let myCartList = [];
+                  if(myCartStr != null && myCartStr != ''){
+                      myCartList = $.parseJSON(myCartStr);
+                  }
+
+                  // 调用接口 传递token获取用户信息
+                  axios.get("http://api.sso.shop.com/api/user/token/"+$.cookie('USER_TOKEN')).then(function (value) {
+                      if(value.data.success){
+                          app.user = value.data.obj;
+
+                          // 调用后台接口合并购物车，传递userId,以及购物车
+                          axios.post("http://api.cart.shop.com/api/cart/mergeCart/"+app.user.id,myCartList).then(function (result) {
+                              // 如果操作成功了，清除cookie
+                              if(result.data.success){
+                                  $.cookie('USER_MYCART',"",{
+                                      expires:1, //存储时间：天为单位
+                                      path:'/',  //设置cookie的路径，设置为"/",可以让其他页面读取另一个页面的cookie
+                                      domain:'shop.com' //设置域名，配合path，该域名下的所有页面都可以获取到cookie
+                                  });
+                              }
+
+                          // 跳转到商品首页
+                          location.href = "http://www.shop.com"
+                          })
+                      }else{
+                          alert("获取用户信息失败")
+                      }
+                  })
+              }else{
+                  // 失败打印结果信息
+                  alert(res.data.message);
+              }
+          })
+      }
+    }
+  });
+</script>
+
